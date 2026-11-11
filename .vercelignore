@@ -1,0 +1,9 @@
+# Excluir archivos pesados de desarrollo y pruebas al desplegar en Vercel
+tests/
+.github/
+.venv/
+venv/
+__pycache__/
+*.pyc
+docs/
+data/output/*.tmp

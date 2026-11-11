@@ -1,0 +1,25 @@
+# Byte-compiled / Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+
+# IDE & OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Temporary outputs (keep directory structure)
+data/output/*.tmp
+*.log
+.vercel/
+.env
+.env.local

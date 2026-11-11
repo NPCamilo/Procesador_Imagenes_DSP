@@ -1,0 +1,5 @@
+# Dependencias base del motor DSP de imágenes (compatibles con Vercel Serverless)
+numpy>=1.26.0
+scipy>=1.11.0
+matplotlib>=3.8.0
+Pillow>=10.0.0
