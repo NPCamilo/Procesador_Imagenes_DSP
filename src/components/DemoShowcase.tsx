@@ -15,6 +15,7 @@ import {
 import type { DemoData } from "@/types/dsp";
 import { BeforeAfterComparator } from "./BeforeAfterComparator";
 import { ImageLightboxDialog, type LightboxAsset } from "./ImageLightboxDialog";
+import { OptimizedPicture, toWebpSrc } from "./OptimizedPicture";
 
 interface DemoShowcaseProps {
   data: DemoData;
@@ -30,57 +31,80 @@ function AtkinsonDitherCanvas({ src }: { src: string }) {
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.src = src;
-    img.onload = () => {
-      const targetW = 192;
-      const ratio = img.height / img.width || 1;
-      const targetH = Math.max(64, Math.round(targetW * ratio));
-      canvas.width = targetW;
-      canvas.height = targetH;
+    let cancelled = false;
 
-      ctx.drawImage(img, 0, 0, targetW, targetH);
-      const imgData = ctx.getImageData(0, 0, targetW, targetH);
-      const data = imgData.data;
+    const runDither = () => {
+      if (cancelled) return;
+      const img = new Image();
+      img.crossOrigin = "anonymous";
+      img.decoding = "async";
+      img.src = toWebpSrc(src) || src;
+      img.onload = () => {
+        if (cancelled) return;
+        const targetW = 192;
+        const ratio = img.height / img.width || 1;
+        const targetH = Math.max(64, Math.round(targetW * ratio));
+        canvas.width = targetW;
+        canvas.height = targetH;
 
-      // Atkinson 1-bit dithering on luminance channel (Ditther skill)
-      const lum = new Float32Array(targetW * targetH);
-      for (let i = 0; i < targetW * targetH; i++) {
-        const idx = i * 4;
-        lum[i] = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
-      }
+        ctx.drawImage(img, 0, 0, targetW, targetH);
+        const imgData = ctx.getImageData(0, 0, targetW, targetH);
+        const data = imgData.data;
 
-      for (let y = 0; y < targetH; y++) {
-        for (let x = 0; x < targetW; x++) {
-          const i = y * targetW + x;
-          const oldVal = lum[i];
-          const newVal = oldVal < 128 ? 0 : 255;
-          const err = (oldVal - newVal) / 8;
-
-          const push = (nx: number, ny: number) => {
-            if (nx >= 0 && nx < targetW && ny >= 0 && ny < targetH) {
-              lum[ny * targetW + nx] += err;
-            }
-          };
-
-          push(x + 1, y);
-          push(x + 2, y);
-          push(x - 1, y + 1);
-          push(x, y + 1);
-          push(x + 1, y + 1);
-          push(x, y + 2);
-
-          const p = i * 4;
-          const bit = newVal === 255;
-          data[p] = bit ? 228 : 12;
-          data[p + 1] = bit ? 242 : 14;
-          data[p + 2] = bit ? 254 : 18;
-          data[p + 3] = 255;
+        const lum = new Float32Array(targetW * targetH);
+        for (let i = 0; i < targetW * targetH; i++) {
+          const idx = i * 4;
+          lum[i] = 0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2];
         }
-      }
 
-      ctx.putImageData(imgData, 0, 0);
+        for (let y = 0; y < targetH; y++) {
+          for (let x = 0; x < targetW; x++) {
+            const i = y * targetW + x;
+            const oldVal = lum[i];
+            const newVal = oldVal < 128 ? 0 : 255;
+            const err = (oldVal - newVal) / 8;
+
+            const push = (nx: number, ny: number) => {
+              if (nx >= 0 && nx < targetW && ny >= 0 && ny < targetH) {
+                lum[ny * targetW + nx] += err;
+              }
+            };
+
+            push(x + 1, y);
+            push(x + 2, y);
+            push(x - 1, y + 1);
+            push(x, y + 1);
+            push(x + 1, y + 1);
+            push(x, y + 2);
+
+            const p = i * 4;
+            const bit = newVal === 255;
+            data[p] = bit ? 228 : 12;
+            data[p + 1] = bit ? 242 : 14;
+            data[p + 2] = bit ? 254 : 18;
+            data[p + 3] = 255;
+          }
+        }
+
+        ctx.putImageData(imgData, 0, 0);
+      };
+    };
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries.some((entry) => entry.isIntersecting)) {
+          observer.disconnect();
+          runDither();
+        }
+      },
+      { rootMargin: "200px" }
+    );
+
+    observer.observe(canvas);
+
+    return () => {
+      cancelled = true;
+      observer.disconnect();
     };
   }, [src]);
 
@@ -104,8 +128,8 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
 
   return (
     <div className="min-w-0 space-y-10 sm:space-y-12">
-      {/* BENTO HERO SECTION (Phases 4, 5, 6, 8) */}
-      <section className="animate-reveal grid min-w-0 items-center gap-8 overflow-hidden rounded-3xl border border-white/10 bg-zinc-900/65 p-4 shadow-2xl backdrop-blur-xl sm:p-8 lg:grid-cols-12 lg:gap-10">
+      {/* BENTO HERO SECTION (Optimized obsidian glass surface without heavy full-panel blur thrash) */}
+      <section className="animate-reveal grid min-w-0 items-center gap-8 overflow-hidden rounded-3xl border border-white/10 bg-zinc-900/90 p-4 shadow-2xl sm:p-8 lg:grid-cols-12 lg:gap-10">
         <div className="min-w-0 space-y-6 lg:col-span-7">
           <div className="inline-flex items-center gap-2 rounded-full border border-sky-400/25 bg-sky-500/10 px-3 py-1 font-mono text-[11px] uppercase tracking-widest text-sky-300">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
@@ -198,8 +222,8 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
       {/* KPI TELEMETRY BENTO GRID */}
       <section aria-label="Indicadores clave del sistema DSP" className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
         <article
-          style={{ animationDelay: "60ms" }}
-          className="animate-reveal rounded-2xl border border-white/10 bg-zinc-900/75 p-5 backdrop-blur-md transition hover:-translate-y-0.5 hover:border-white/20"
+          style={{ animationDelay: "50ms" }}
+          className="animate-reveal rounded-2xl border border-white/10 bg-zinc-900/90 p-5 transition-transform duration-200 hover:-translate-y-0.5 hover:border-white/20"
         >
           <p className="font-mono text-[11px] uppercase tracking-widest text-zinc-400">
             Resolución & Camiseta
@@ -213,8 +237,8 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
         </article>
 
         <article
-          style={{ animationDelay: "120ms" }}
-          className="animate-reveal rounded-2xl border border-white/10 bg-zinc-900/75 p-5 backdrop-blur-md transition hover:-translate-y-0.5 hover:border-white/20"
+          style={{ animationDelay: "100ms" }}
+          className="animate-reveal rounded-2xl border border-white/10 bg-zinc-900/90 p-5 transition-transform duration-200 hover:-translate-y-0.5 hover:border-white/20"
         >
           <p className="font-mono text-[11px] uppercase tracking-widest text-zinc-400">
             Compresión DCT 8×8
@@ -229,8 +253,8 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
         </article>
 
         <article
-          style={{ animationDelay: "180ms" }}
-          className="animate-reveal rounded-2xl border border-white/10 bg-zinc-900/75 p-5 backdrop-blur-md transition hover:-translate-y-0.5 hover:border-white/20"
+          style={{ animationDelay: "150ms" }}
+          className="animate-reveal rounded-2xl border border-white/10 bg-zinc-900/90 p-5 transition-transform duration-200 hover:-translate-y-0.5 hover:border-white/20"
         >
           <p className="font-mono text-[11px] uppercase tracking-widest text-zinc-400">
             Transmisión {fase3_4_5.tx_manifest.scheme}
@@ -244,8 +268,8 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
         </article>
 
         <article
-          style={{ animationDelay: "240ms" }}
-          className="animate-reveal rounded-2xl border border-white/10 bg-zinc-900/75 p-5 backdrop-blur-md transition hover:-translate-y-0.5 hover:border-white/20"
+          style={{ animationDelay: "200ms" }}
+          className="animate-reveal rounded-2xl border border-white/10 bg-zinc-900/90 p-5 transition-transform duration-200 hover:-translate-y-0.5 hover:border-white/20"
         >
           <p className="font-mono text-[11px] uppercase tracking-widest text-zinc-400">
             Fidelidad Reconstruida
@@ -260,7 +284,7 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
       </section>
 
       {/* STATION 01-02: CAPTURE, RED FILTER & SAMPLING */}
-      <section className="space-y-6 rounded-2xl border border-white/10 bg-zinc-900/65 p-6 backdrop-blur-md sm:p-8">
+      <section className="station-deferred space-y-6 rounded-2xl border border-white/10 bg-zinc-900/90 p-5 sm:p-8">
         <header className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-5">
           <div>
             <p className="font-mono text-[11px] uppercase tracking-widest text-sky-400">
@@ -299,15 +323,15 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
               key={fig.title}
               type="button"
               onClick={() => openLightbox(fig.src, fig.title, fig.desc)}
-              className="group relative flex flex-col overflow-hidden rounded-xl border border-white/10 bg-zinc-950/75 text-left transition hover:-translate-y-0.5 hover:border-sky-400/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
+              className="group relative flex flex-col overflow-hidden rounded-xl border border-white/10 bg-zinc-950/90 text-left transition duration-200 hover:-translate-y-0.5 hover:border-sky-400/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
             >
-              <div className="relative overflow-hidden">
-                <img
+              <div className="relative aspect-[16/10] w-full overflow-hidden bg-zinc-950">
+                <OptimizedPicture
                   src={fig.src}
                   alt={fig.title}
-                  className="aspect-[16/10] w-full object-cover transition duration-500 group-hover:scale-[1.02]"
+                  className="h-full w-full object-contain p-1 transition-transform duration-500 group-hover:scale-[1.03]"
                 />
-                <span className="absolute right-2.5 top-2.5 inline-flex items-center gap-1 rounded-md border border-white/15 bg-zinc-950/80 px-2 py-1 font-mono text-[10px] text-zinc-200 backdrop-blur">
+                <span className="absolute right-2.5 top-2.5 inline-flex items-center gap-1 rounded-md border border-white/15 bg-zinc-950/85 px-2 py-1 font-mono text-[10px] text-zinc-200">
                   <Maximize2 className="h-3 w-3" /> Zoom
                 </span>
               </div>
@@ -321,7 +345,7 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
       </section>
 
       {/* STATION 03: NQS SAMPLING, QUANTIZATION & COMPRESSION */}
-      <section className="space-y-6 rounded-2xl border border-white/10 bg-zinc-900/65 p-6 backdrop-blur-md sm:p-8">
+      <section className="station-deferred space-y-6 rounded-2xl border border-white/10 bg-zinc-900/90 p-5 sm:p-8">
         <header className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-5">
           <div>
             <p className="font-mono text-[11px] uppercase tracking-widest text-amber-400">
@@ -381,16 +405,18 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
               key={fig.title}
               type="button"
               onClick={() => openLightbox(fig.src, fig.title)}
-              className="group relative overflow-hidden rounded-xl border border-white/10 bg-zinc-950/75 text-left transition hover:-translate-y-0.5 hover:border-amber-400/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
+              className="group relative flex flex-col overflow-hidden rounded-xl border border-white/10 bg-zinc-950/90 text-left transition duration-200 hover:-translate-y-0.5 hover:border-amber-400/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-400"
             >
-              <img
-                src={fig.src}
-                alt={fig.title}
-                className="aspect-[16/10] w-full object-cover transition duration-500 group-hover:scale-[1.02]"
-              />
-              <span className="absolute right-2.5 top-2.5 inline-flex items-center gap-1 rounded-md border border-white/15 bg-zinc-950/80 px-2 py-1 font-mono text-[10px] text-zinc-200 backdrop-blur">
-                <Maximize2 className="h-3 w-3" /> Zoom
-              </span>
+              <div className="relative aspect-[16/10] w-full overflow-hidden bg-zinc-950">
+                <OptimizedPicture
+                  src={fig.src}
+                  alt={fig.title}
+                  className="h-full w-full object-contain p-1 transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+                <span className="absolute right-2.5 top-2.5 inline-flex items-center gap-1 rounded-md border border-white/15 bg-zinc-950/85 px-2 py-1 font-mono text-[10px] text-zinc-200">
+                  <Maximize2 className="h-3 w-3" /> Zoom
+                </span>
+              </div>
               <div className="p-3.5 text-xs font-semibold text-zinc-100">{fig.title}</div>
             </button>
           ))}
@@ -398,7 +424,7 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
       </section>
 
       {/* STATION 04-05: AUDIBLE MODULATION & DEMODULATION */}
-      <section className="space-y-6 rounded-2xl border border-white/10 bg-zinc-900/65 p-6 backdrop-blur-md sm:p-8">
+      <section className="station-deferred space-y-6 rounded-2xl border border-white/10 bg-zinc-900/90 p-5 sm:p-8">
         <header className="flex flex-wrap items-end justify-between gap-4 border-b border-white/10 pb-5">
           <div>
             <p className="font-mono text-[11px] uppercase tracking-widest text-emerald-400">
@@ -468,16 +494,18 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
               key={fig.title}
               type="button"
               onClick={() => openLightbox(fig.src, fig.title)}
-              className="group relative overflow-hidden rounded-xl border border-white/10 bg-zinc-950/75 text-left transition hover:-translate-y-0.5 hover:border-emerald-400/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
+              className="group relative flex flex-col overflow-hidden rounded-xl border border-white/10 bg-zinc-950/90 text-left transition duration-200 hover:-translate-y-0.5 hover:border-emerald-400/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400"
             >
-              <img
-                src={fig.src}
-                alt={fig.title}
-                className="aspect-[16/10] w-full object-cover transition duration-500 group-hover:scale-[1.02]"
-              />
-              <span className="absolute right-2.5 top-2.5 inline-flex items-center gap-1 rounded-md border border-white/15 bg-zinc-950/80 px-2 py-1 font-mono text-[10px] text-zinc-200 backdrop-blur">
-                <Maximize2 className="h-3 w-3" /> Zoom
-              </span>
+              <div className="relative aspect-[16/10] w-full overflow-hidden bg-zinc-950">
+                <OptimizedPicture
+                  src={fig.src}
+                  alt={fig.title}
+                  className="h-full w-full object-contain p-1 transition-transform duration-500 group-hover:scale-[1.03]"
+                />
+                <span className="absolute right-2.5 top-2.5 inline-flex items-center gap-1 rounded-md border border-white/15 bg-zinc-950/85 px-2 py-1 font-mono text-[10px] text-zinc-200">
+                  <Maximize2 className="h-3 w-3" /> Zoom
+                </span>
+              </div>
               <div className="p-3.5 text-xs font-semibold text-zinc-100">{fig.title}</div>
             </button>
           ))}
@@ -485,7 +513,7 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
       </section>
 
       {/* STATION 06: RECONSTRUCTION PNG, SVG, DAC AUDIO, DITHER PREVIEW & EXCHANGE */}
-      <section className="space-y-6 rounded-2xl border border-white/10 bg-zinc-900/65 p-6 backdrop-blur-md sm:p-8">
+      <section className="station-deferred space-y-6 rounded-2xl border border-white/10 bg-zinc-900/90 p-5 sm:p-8">
         <header className="flex flex-wrap items-center justify-between gap-4 border-b border-white/10 pb-5">
           <div>
             <p className="font-mono text-[11px] uppercase tracking-widest text-rose-400">
@@ -564,11 +592,13 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
                 Ampliar
               </button>
             </div>
-            <img
-              src={assets.reconstructed_png}
-              alt="Reconstruida PNG"
-              className="mx-auto max-h-56 rounded-lg border border-white/10"
-            />
+            <div className="flex justify-center">
+              <OptimizedPicture
+                src={assets.reconstructed_png}
+                alt="Reconstruida PNG"
+                className="mx-auto max-h-56 w-auto rounded-lg border border-white/10 object-contain"
+              />
+            </div>
           </div>
 
           <div className="rounded-xl border border-white/10 bg-zinc-950/80 p-4">
@@ -633,10 +663,10 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
               <Maximize2 className="h-3 w-3" /> Inspeccionar pantalla completa
             </span>
           </div>
-          <img
+          <OptimizedPicture
             src={assets.fig_comparison}
             alt="Comparativa Final"
-            className="w-full rounded-lg object-contain transition duration-500 group-hover:scale-[1.005]"
+            className="w-full rounded-lg object-contain transition-transform duration-500 group-hover:scale-[1.005]"
           />
         </button>
       </section>
