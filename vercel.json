@@ -1,0 +1,14 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "functions": {
+    "api/index.py": {
+      "excludeFiles": "{node_modules/**,.next/**,tests/**,src/**,public/demo/*.png,public/demo/*.wav,public/demo/*.zip,public/demo/*.svg,public/demo/*.dspimg}"
+    }
+  },
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.py"
+    }
+  ]
+}
