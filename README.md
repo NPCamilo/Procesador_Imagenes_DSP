@@ -14,8 +14,8 @@ Sistema modular en Python diseñado para validar paso a paso la cadena completa 
 | **Fase 1** | `image_io`, `red_filter`, `analyzer` | Carga JPG/JPEG, reproducción, filtro de color rojo de mayor área, $f_s$ | **Completada** |
 | **Fase 2** | `sampling_nqs`, `quantization`, `codec` | Muestreo NQS, resolución `[Byte / Bit]`, compresión/descompresión `.dspimg` | **Completada** |
 | **Fase 3** | `dsp_img/modulation/` | Modulación (`AM, FM, ASK, FSK, PSK, QAM, MFSK`) y audio audible de bits | **Completada** |
-| **Fase 4** | `dsp_img/demodulation/` | Sincronización, demodulación, cálculo de BER y reproducción demodulada | *Siguiente* |
-| **Fase 5** | `dsp_img/reconstruction/` | Reconstrucción de audio, exportación PNG/SVG vectorial, métricas e intercambio TX/RX | *Pendiente* |
+| **Fase 4** | `dsp_img/demodulation/` | Sincronización, demodulación, cálculo de BER y reproducción demodulada | **Completada** |
+| **Fase 5** | `dsp_img/reconstruction/` | Reconstrucción de audio, exportación PNG/SVG vectorial, métricas e intercambio TX/RX | *Siguiente* |
 | **Fase 6** | App Web Serverless | Endpoints/vistas funcionando en Vercel Preview | *Pendiente* |
 | **Fase 7** | UI/UX Final | Diseño de producto final y publicación en producción | *Pendiente* |
 
