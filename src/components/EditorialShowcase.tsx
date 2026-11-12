@@ -264,19 +264,17 @@ export function EditorialShowcase({
         <div className="min-w-0 space-y-7 lg:col-span-6">
           <p className="inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.2em] text-sky-600 dark:text-sky-400">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
-            Comunicación Digital de Imágenes · UTP
+            Procesamiento Visual y Sonoro · UTP
           </p>
 
           <h2 className="font-display text-4xl font-bold tracking-tight text-(--ink) sm:text-5xl lg:text-[3.15rem] lg:leading-[1.06]">
-            Señal visual comprimida, modulada en audio y reconstruida.
+            Convierte una fotografía en audio y recupérala al instante.
           </h2>
 
           <p className="max-w-xl text-sm leading-relaxed text-(--ink-muted) sm:text-base">
-            Pipeline completo sobre{" "}
-            <span className="font-mono text-(--ink)">{data.project.source_image}</span>:
-            aislamiento topológico de color rojo dominante, cuantización{" "}
-            <span className="font-mono text-(--ink)">[Byte / Bit]</span>, compresión DCT 8×8,
-            modulación pasabanda audible y recuperación vectorial SVG/PNG.
+            Aísla selectivamente el área roja protagonista de cualquier foto, reduce su peso sin
+            perder nitidez, escúchala viajar como señal sonora y reconstruye su resultado en imagen
+            digital y trazo vectorial.
           </p>
 
           <div className="flex flex-wrap items-center gap-3">
@@ -298,7 +296,7 @@ export function EditorialShowcase({
               onClick={() => onOpenTelemetry("all")}
               className="inline-flex items-center gap-1.5 px-2 py-2 font-mono text-[11px] text-(--ink-muted) underline decoration-(--hairline) underline-offset-4 transition hover:text-(--ink)"
             >
-              <SlidersHorizontal className="h-3.5 w-3.5" /> Ficha técnica completa
+              <SlidersHorizontal className="h-3.5 w-3.5" /> Ficha técnica (Sustentación)
             </button>
           </div>
 
@@ -306,7 +304,7 @@ export function EditorialShowcase({
           <dl className="grid grid-cols-2 gap-x-6 gap-y-4 border-t border-(--hairline) pt-6 sm:grid-cols-4">
             <div>
               <dt className="font-mono text-[10px] uppercase tracking-widest text-(--ink-muted)">
-                Captura
+                Resolución
               </dt>
               <dd className="mt-1 font-display text-lg font-semibold text-(--ink)">
                 {fase1.sampling.width_px}×{fase1.sampling.height_px}
@@ -314,7 +312,7 @@ export function EditorialShowcase({
             </div>
             <div>
               <dt className="font-mono text-[10px] uppercase tracking-widest text-(--ink-muted)">
-                Ratio DCT
+                Compresión
               </dt>
               <dd className="mt-1 font-display text-lg font-semibold text-sky-600 dark:text-sky-400">
                 {fase2.compression_dct.ratio}×
@@ -322,10 +320,10 @@ export function EditorialShowcase({
             </div>
             <div>
               <dt className="font-mono text-[10px] uppercase tracking-widest text-(--ink-muted)">
-                Error Canal
+                Integridad
               </dt>
               <dd className="mt-1 font-display text-lg font-semibold text-emerald-600 dark:text-emerald-400">
-                {fase3_4_5.ber_bfsk} BER
+                {fase3_4_5.crc_valid ? "100% OK" : "Error"}
               </dd>
             </div>
             <div>
@@ -403,7 +401,7 @@ export function EditorialShowcase({
             })}
           </div>
 
-          <div className="min-w-0 lg:col-span-8">
+          <div className="min-w-0 space-y-4 lg:col-span-8">
             <button
               type="button"
               onClick={() =>
@@ -411,18 +409,70 @@ export function EditorialShowcase({
               }
               className="group relative block w-full overflow-hidden rounded-2xl border border-(--hairline) bg-zinc-950 p-2 text-left transition hover:border-sky-500/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
             >
-              <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-zinc-950">
-                <OptimizedPicture
-                  key={activeSpectral.src}
-                  src={activeSpectral.src}
-                  alt={activeSpectral.title}
-                  className="h-full w-full object-contain"
-                />
-              </div>
+              <OptimizedPicture
+                key={activeSpectral.src}
+                src={activeSpectral.src}
+                alt={activeSpectral.title}
+                className="mx-auto h-auto max-h-[500px] w-full rounded-xl object-contain"
+              />
               <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-white/15 bg-zinc-950/85 px-3 py-1 font-mono text-[10px] text-zinc-200 transition group-hover:border-sky-400/60">
                 <Maximize2 className="h-3 w-3" /> Inspeccionar
               </span>
             </button>
+
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() =>
+                  openLightbox(assets.original_png, "Señal Original RGB")
+                }
+                className="group flex items-center gap-3 overflow-hidden rounded-xl border border-(--hairline) bg-(--surface) p-2.5 text-left transition hover:border-sky-500/40"
+              >
+                <div className="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-zinc-950">
+                  <OptimizedPicture
+                    src={assets.original_png}
+                    alt="Original RGB"
+                    className="h-full w-full object-cover object-[50%_20%]"
+                  />
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate font-mono text-[10px] uppercase tracking-wider text-(--ink-muted)">
+                    Entrada RGB
+                  </p>
+                  <p className="truncate text-xs font-semibold text-(--ink)">
+                    Fotografía completa
+                  </p>
+                </div>
+              </button>
+
+              <button
+                type="button"
+                onClick={() =>
+                  openLightbox(
+                    assets.red_splash_png,
+                    "Aislamiento Camiseta Roja",
+                    `${fase1.red_filter.largest_area_percent}% del cuadro (${fase1.red_filter.num_components} regiones detectadas)`
+                  )
+                }
+                className="group flex items-center gap-3 overflow-hidden rounded-xl border border-(--hairline) bg-(--surface) p-2.5 text-left transition hover:border-red-500/40"
+              >
+                <div className="h-14 w-14 shrink-0 overflow-hidden rounded-lg bg-zinc-950">
+                  <OptimizedPicture
+                    src={assets.red_splash_png}
+                    alt="Filtro Rojo Dominante"
+                    className="h-full w-full object-cover object-[50%_20%]"
+                  />
+                </div>
+                <div className="min-w-0">
+                  <p className="truncate font-mono text-[10px] uppercase tracking-wider text-red-500">
+                    Salida Filtro Rojo
+                  </p>
+                  <p className="truncate text-xs font-semibold text-(--ink)">
+                    Camiseta aislada ({fase1.red_filter.largest_area_percent}%)
+                  </p>
+                </div>
+              </button>
+            </div>
           </div>
         </div>
       </section>
@@ -475,14 +525,12 @@ export function EditorialShowcase({
               }
               className="group relative block w-full overflow-hidden rounded-2xl border border-(--hairline) bg-zinc-950 p-2 text-left transition hover:border-amber-500/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-500"
             >
-              <div className="relative aspect-[16/10] w-full overflow-hidden rounded-xl bg-zinc-950">
-                <OptimizedPicture
-                  key={activeDigital.src}
-                  src={activeDigital.src}
-                  alt={activeDigital.title}
-                  className="h-full w-full object-contain"
-                />
-              </div>
+              <OptimizedPicture
+                key={activeDigital.src}
+                src={activeDigital.src}
+                alt={activeDigital.title}
+                className="mx-auto h-auto max-h-[500px] w-full rounded-xl object-contain"
+              />
               <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-white/15 bg-zinc-950/85 px-3 py-1 font-mono text-[10px] text-zinc-200">
                 <Maximize2 className="h-3 w-3" /> Zoom
               </span>
@@ -587,14 +635,12 @@ export function EditorialShowcase({
               onClick={() => openLightbox(activeRf.src, activeRf.title)}
               className="group relative block w-full overflow-hidden rounded-2xl border border-(--hairline) bg-zinc-950 p-2 text-left transition hover:border-emerald-500/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-500"
             >
-              <div className="relative aspect-[16/9] max-h-[460px] w-full overflow-hidden rounded-xl bg-zinc-950">
-                <OptimizedPicture
-                  key={activeRf.src}
-                  src={activeRf.src}
-                  alt={activeRf.title}
-                  className="h-full w-full object-contain"
-                />
-              </div>
+              <OptimizedPicture
+                key={activeRf.src}
+                src={activeRf.src}
+                alt={activeRf.title}
+                className="mx-auto h-auto max-h-[500px] w-full rounded-xl object-contain"
+              />
               <span className="absolute right-4 top-4 inline-flex items-center gap-1 rounded-full border border-white/15 bg-zinc-950/85 px-3 py-1 font-mono text-[10px] text-zinc-200">
                 <Maximize2 className="h-3 w-3" /> Zoom
               </span>

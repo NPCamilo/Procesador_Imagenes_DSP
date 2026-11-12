@@ -57,10 +57,9 @@ body {
   animation: fadeInSlideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* Skip offscreen layout & paint work for lower DSP stations until scrolled into view */
+/* Keep offscreen sections paint-ready for instant jump navigation & reliable media load */
 .station-deferred {
-  content-visibility: auto;
-  contain-intrinsic-size: auto 560px;
+  contain: layout style;
 }
 
 /* Native HTML5 dialog backdrop and smooth open state */

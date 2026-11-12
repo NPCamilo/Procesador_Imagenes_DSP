@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React from "react";
 
 interface OptimizedPictureProps {
   src: string;
@@ -24,23 +24,19 @@ export function OptimizedPicture({
   priority = false,
   draggable = true,
 }: OptimizedPictureProps) {
-  const [loaded, setLoaded] = useState(false);
   const webp = toWebpSrc(src);
 
   return (
-    <picture className="block h-full w-full">
+    <picture className="contents">
       {webp && <source srcSet={webp} type="image/webp" />}
       <img
         src={src}
         alt={alt}
-        loading={priority ? "eager" : "lazy"}
+        loading={priority ? "eager" : "eager"}
         decoding="async"
         fetchPriority={priority ? "high" : "auto"}
         draggable={draggable}
-        onLoad={() => setLoaded(true)}
-        className={`${className} transition-opacity duration-300 ${
-          loaded ? "opacity-100" : "opacity-0"
-        }`}
+        className={className}
       />
     </picture>
   );

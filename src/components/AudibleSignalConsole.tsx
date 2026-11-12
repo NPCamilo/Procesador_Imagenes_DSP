@@ -28,39 +28,66 @@ export function AudibleSignalConsole({ tracks }: AudibleSignalConsoleProps) {
   const [playing, setPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
+  const [playError, setPlayError] = useState<string | null>(null);
+  const [phaseTick, setPhaseTick] = useState(0);
 
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const activeTrack = tracks.find((t) => t.id === activeId) ?? tracks[0];
 
-  // Deterministic harmonic visual bars per track for tactile ElevenLabs-style scrub bar
+  // Deterministic harmonic visual bars per track + gentle live pulse while playing
   const bars = useMemo(() => {
     const seed = tracks.findIndex((t) => t.id === activeTrack?.id) + 1;
     return Array.from({ length: 56 }, (_, i) => {
-      const h =
+      const base =
         28 +
-        Math.abs(Math.sin(i * 0.28 + seed * 1.4) * Math.cos(i * 0.11 - seed)) * 68;
-      return Math.round(h);
+        Math.abs(Math.sin(i * 0.28 + seed * 1.4) * Math.cos(i * 0.11 - seed)) * 62;
+      const mod = playing ? Math.sin(i * 0.45 + phaseTick * 0.35) * 14 : 0;
+      return Math.max(16, Math.min(96, Math.round(base + mod)));
     });
-  }, [tracks, activeTrack?.id]);
+  }, [tracks, activeTrack?.id, playing, phaseTick]);
 
+  // Animate waveform bars gently only while audio is actively playing
   useEffect(() => {
-    const audio = audioRef.current;
-    if (!audio) return;
+    if (!playing) return;
+    let rafId = 0;
+    let last = 0;
+    const step = (now: number) => {
+      if (now - last >= 75) {
+        setPhaseTick((p) => (p + 1) % 1000);
+        last = now;
+      }
+      rafId = window.requestAnimationFrame(step);
+    };
+    rafId = window.requestAnimationFrame(step);
+    return () => window.cancelAnimationFrame(rafId);
+  }, [playing]);
+
+  const handleSelectTrack = (id: string) => {
+    if (audioRef.current) {
+      audioRef.current.pause();
+    }
+    setPlaying(false);
     setCurrentTime(0);
     setDuration(0);
-    setPlaying(false);
-    audio.load();
-  }, [activeTrack?.src]);
+    setPlayError(null);
+    setActiveId(id);
+  };
 
   const togglePlay = async () => {
     const audio = audioRef.current;
     if (!audio) return;
+    setPlayError(null);
     if (audio.paused) {
       try {
         await audio.play();
         setPlaying(true);
-      } catch {
+      } catch (err) {
         setPlaying(false);
+        setPlayError(
+          err instanceof Error
+            ? `No se pudo iniciar reproducción automática (${err.message}). Usa el reproductor nativo debajo.`
+            : "Usa el reproductor nativo debajo para reproducir el audio."
+        );
       }
     } else {
       audio.pause();
@@ -70,8 +97,10 @@ export function AudibleSignalConsole({ tracks }: AudibleSignalConsoleProps) {
 
   const handleScrub = (ratio: number) => {
     const audio = audioRef.current;
-    if (!audio || !duration) return;
-    const next = Math.max(0, Math.min(duration, ratio * duration));
+    if (!audio) return;
+    const total = audio.duration || duration;
+    if (!Number.isFinite(total) || total <= 0) return;
+    const next = Math.max(0, Math.min(total, ratio * total));
     audio.currentTime = next;
     setCurrentTime(next);
   };
@@ -90,7 +119,7 @@ export function AudibleSignalConsole({ tracks }: AudibleSignalConsoleProps) {
             <button
               key={track.id}
               type="button"
-              onClick={() => setActiveId(track.id)}
+              onClick={() => handleSelectTrack(track.id)}
               className={`group flex flex-col items-start border-b border-r border-(--hairline) px-3.5 py-3 text-left transition last:border-r-0 lg:border-b-0 ${
                 isSelected
                   ? "bg-(--surface-elevated)"
@@ -113,7 +142,7 @@ export function AudibleSignalConsole({ tracks }: AudibleSignalConsoleProps) {
       </div>
 
       {/* Main Unified Console Deck */}
-      <div className="p-4 sm:p-6">
+      <div className="space-y-4 p-4 sm:p-6">
         <div className="flex flex-wrap items-center justify-between gap-4">
           <div className="flex items-center gap-3.5">
             <button
@@ -153,7 +182,7 @@ export function AudibleSignalConsole({ tracks }: AudibleSignalConsoleProps) {
           </div>
         </div>
 
-        {/* Click-to-seek Minimalist ElevenLabs-style Waveform Bar */}
+        {/* Click-to-seek Minimalist Waveform Bar */}
         <div
           role="slider"
           tabIndex={0}
@@ -169,7 +198,7 @@ export function AudibleSignalConsole({ tracks }: AudibleSignalConsoleProps) {
             if (e.key === "ArrowRight") handleScrub(Math.min(1, progress + 0.05));
             if (e.key === "ArrowLeft") handleScrub(Math.max(0, progress - 0.05));
           }}
-          className="mt-5 flex h-12 cursor-pointer items-center gap-[3px] rounded-xl border border-(--hairline) bg-(--surface-elevated) px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
+          className="flex h-12 cursor-pointer items-center gap-[3px] rounded-xl border border-(--hairline) bg-(--surface-elevated) px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
         >
           {bars.map((h, idx) => {
             const played = idx / bars.length <= progress;
@@ -177,7 +206,7 @@ export function AudibleSignalConsole({ tracks }: AudibleSignalConsoleProps) {
               <span
                 key={idx}
                 style={{ height: `${h}%` }}
-                className={`flex-1 rounded-full transition-colors duration-150 ${
+                className={`flex-1 rounded-full transition-[height,background-color] duration-100 ${
                   played ? "bg-sky-500" : "bg-zinc-400/35 dark:bg-zinc-600/45"
                 }`}
               />
@@ -185,17 +214,35 @@ export function AudibleSignalConsole({ tracks }: AudibleSignalConsoleProps) {
           })}
         </div>
 
+        {/* Always-available native HTML5 audio player synced with the deck (never hidden via sr-only!) */}
         <audio
+          key={activeTrack.src}
           ref={audioRef}
-          preload="metadata"
+          controls
+          preload="auto"
           src={activeTrack.src}
           onLoadedMetadata={(e) => setDuration(e.currentTarget.duration || 0)}
+          onDurationChange={(e) => setDuration(e.currentTarget.duration || 0)}
           onTimeUpdate={(e) => setCurrentTime(e.currentTarget.currentTime || 0)}
           onEnded={() => setPlaying(false)}
           onPause={() => setPlaying(false)}
-          onPlay={() => setPlaying(true)}
-          className="sr-only"
+          onPlay={() => {
+            setPlayError(null);
+            setPlaying(true);
+          }}
+          onError={() =>
+            setPlayError(
+              "El navegador no pudo cargar el archivo WAV desde el servidor actual."
+            )
+          }
+          className="h-10 w-full rounded-xl"
         />
+
+        {playError && (
+          <p className="font-mono text-[11px] text-amber-600 dark:text-amber-300">
+            {playError}
+          </p>
+        )}
       </div>
     </div>
   );
