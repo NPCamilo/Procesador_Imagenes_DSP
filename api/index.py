@@ -91,13 +91,16 @@ def health() -> Dict[str, Any]:
 
 @app.get("/api/demo")
 def get_precomputed_demo() -> Dict[str, Any]:
-    demo_json = ROOT / "public" / "demo" / "datos_demo.json"
-    if not demo_json.exists():
-        raise HTTPException(
-            status_code=404,
-            detail="datos_demo.json no encontrado. Ejecute `python build_web_assets.py`.",
-        )
-    return json.loads(demo_json.read_text(encoding="utf-8"))
+    for candidate in (
+        ROOT / "public" / "demo" / "datos_demo.json",
+        ROOT / "dsp_img" / "datos_demo.json",
+    ):
+        if candidate.exists():
+            return json.loads(candidate.read_text(encoding="utf-8"))
+    raise HTTPException(
+        status_code=404,
+        detail="datos_demo.json no encontrado. Ejecute `python build_web_assets.py`.",
+    )
 
 
 @app.post("/api/tx/pipeline")

@@ -260,6 +260,9 @@ def main() -> int:
 
     with open(out_dir / "datos_demo.json", "w", encoding="utf-8") as handle:
         json.dump(datos, handle, indent=2, ensure_ascii=False)
+    # Copia ligera dentro del paquete para que /api/demo también funcione en Vercel Serverless
+    with open(root / "dsp_img" / "datos_demo.json", "w", encoding="utf-8") as handle:
+        json.dump(datos, handle, indent=2, ensure_ascii=False)
 
     print(f"Listo: activos generados en {out_dir}")
     return 0
