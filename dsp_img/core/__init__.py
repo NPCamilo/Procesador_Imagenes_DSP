@@ -1,5 +1,19 @@
-"""Contratos tipados y primitivas matemáticas del núcleo DSP."""
+"""Contratos tipados, primitivas DSP, análisis NQS, cuantización y compresión."""
 
+from .analyzer import (
+    analyze_sampling_frequency,
+    compute_2d_radial_spectrum,
+    plot_sampling_frequency_analysis,
+    summarize_sampling_metrics,
+)
+from .codec import (
+    METHOD_LOSSLESS,
+    METHOD_LOSSY_DCT,
+    ImageCompressor,
+    load_compressed_packet,
+    plot_compression_comparison,
+    save_compressed_packet,
+)
 from .contracts import (
     BaseCompressor,
     BaseDemodulator,
@@ -13,6 +27,12 @@ from .contracts import (
     ReconstructionMetrics,
     RedSplashResult,
     SamplingReport,
+)
+from .image_io import (
+    image_to_png_bytes,
+    load_image,
+    plot_original_reproduction,
+    save_image_png,
 )
 from .primitives import (
     DB_PER_BIT,
@@ -34,36 +54,78 @@ from .primitives import (
     sqnr_theoretical_db,
     unpack_bits,
 )
+from .quantization import (
+    format_digital_preview,
+    load_digital_stream,
+    plot_quantization_resolution_study,
+    quantize_image,
+    save_digital_stream,
+)
+from .red_filter import (
+    detect_red_mask,
+    isolate_largest_red_region,
+    plot_red_splash_comparison,
+)
+from .sampling_nqs import (
+    plot_nqs_sampling_study,
+    sample_image_nqs,
+    simulate_1d_nqs_sampling,
+)
 
 __all__ = [
     "DB_PER_BIT",
     "FULL_SCALE_PENALTY_DB",
+    "METHOD_LOSSLESS",
+    "METHOD_LOSSY_DCT",
     "BaseCompressor",
     "BaseDemodulator",
     "BaseModulator",
     "BaseReconstructor",
     "CompressedPacket",
     "DemodulatedResult",
+    "ImageCompressor",
     "ImageSignal",
     "ModulatedWaveform",
     "QuantizedStream",
     "ReconstructionMetrics",
     "RedSplashResult",
     "SamplingReport",
+    "analyze_sampling_frequency",
+    "compute_2d_radial_spectrum",
     "compute_spectrum",
+    "detect_red_mask",
     "diagnostico_nyquist",
     "dither_signal",
     "estimate_max_frequency",
+    "format_digital_preview",
+    "image_to_png_bytes",
+    "isolate_largest_red_region",
+    "load_compressed_packet",
+    "load_digital_stream",
+    "load_image",
     "nrmse_by_range",
     "pack_bits",
     "pearson_correlation",
+    "plot_compression_comparison",
+    "plot_nqs_sampling_study",
+    "plot_original_reproduction",
+    "plot_quantization_resolution_study",
+    "plot_red_splash_comparison",
+    "plot_sampling_frequency_analysis",
     "psnr_db",
+    "quantize_image",
     "quantize_uniform",
     "quantizer_params",
     "reconstruct_sinc",
     "reconstruct_zoh",
     "rmse",
+    "sample_image_nqs",
+    "save_compressed_packet",
+    "save_digital_stream",
+    "save_image_png",
+    "simulate_1d_nqs_sampling",
     "snr_db",
     "sqnr_theoretical_db",
+    "summarize_sampling_metrics",
     "unpack_bits",
 ]
