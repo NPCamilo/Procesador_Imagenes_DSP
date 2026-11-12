@@ -208,11 +208,16 @@ export function PeerReceiver() {
             </div>
           </div>
 
-          <div className="rounded-xl border border-emerald-500/20 bg-zinc-950/85 p-4">
+          <div className="min-w-0 overflow-hidden rounded-xl border border-emerald-500/20 bg-zinc-950/85 p-4">
             <p className="mb-2 text-xs font-semibold text-emerald-400">
               Audio Reconstruido desde Datos Demodulados
             </p>
-            <audio controls className="h-9 w-full" src={result.reconstructed_audio_wav_url} />
+            <audio
+              controls
+              preload="metadata"
+              className="h-9 w-full min-w-0 max-w-full"
+              src={result.reconstructed_audio_wav_url}
+            />
           </div>
 
           {result.demodulated_zoom.length > 0 && (

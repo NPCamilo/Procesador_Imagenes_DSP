@@ -26,15 +26,15 @@ export function BeforeAfterComparator({
   const [split, setSplit] = useState(54);
 
   return (
-    <div className="group relative [perspective:1200px]">
+    <div className="group relative min-w-0 max-w-full [perspective:1200px]">
       {/* Halftone / Dither corner matrix accent behind hardware frame (Ditther skill) */}
       <div
         aria-hidden="true"
-        className="pointer-events-none absolute -right-4 -top-4 h-36 w-36 rounded-3xl bg-[radial-gradient(#38bdf8_1px,transparent_1px)] opacity-25 [background-size:6px_6px] [mask-image:radial-gradient(circle_at_top_right,#000_25%,transparent_75%)]"
+        className="pointer-events-none absolute right-0 top-0 h-32 w-32 rounded-3xl bg-[radial-gradient(#38bdf8_1px,transparent_1px)] opacity-25 [background-size:6px_6px] [mask-image:radial-gradient(circle_at_top_right,#000_25%,transparent_75%)] sm:-right-4 sm:-top-4 sm:h-36 sm:w-36"
       />
 
       {/* 3D Perspective Hardware Studio Frame (Ultramock skill) */}
-      <div className="relative overflow-hidden rounded-2xl border border-white/15 bg-zinc-900/90 shadow-[0_32px_90px_-18px_rgba(0,0,0,0.85)] backdrop-blur-md transition-transform duration-700 ease-out [transform-style:preserve-3d] [transform:rotateX(5deg)_rotateY(-5deg)] group-hover:[transform:rotateX(0deg)_rotateY(0deg)]">
+      <div className="relative overflow-hidden rounded-2xl border border-white/15 bg-zinc-900/90 shadow-[0_32px_90px_-18px_rgba(0,0,0,0.85)] backdrop-blur-md transition-transform duration-700 ease-out [transform-style:preserve-3d] md:[transform:rotateX(5deg)_rotateY(-5deg)] md:group-hover:[transform:rotateX(0deg)_rotateY(0deg)]">
         {/* Specular top highlight rim */}
         <div
           aria-hidden="true"
@@ -42,16 +42,16 @@ export function BeforeAfterComparator({
         />
 
         {/* Studio Chassis Titlebar */}
-        <div className="relative z-10 flex items-center justify-between border-b border-white/10 bg-zinc-950/80 px-4 py-2.5">
-          <div className="flex items-center gap-2">
-            <span className="h-2.5 w-2.5 rounded-full bg-red-500/80" />
-            <span className="h-2.5 w-2.5 rounded-full bg-amber-400/80" />
-            <span className="h-2.5 w-2.5 rounded-full bg-emerald-400/80" />
-            <span className="ml-2 font-mono text-[11px] tracking-wider text-zinc-400">
+        <div className="relative z-10 flex items-center justify-between gap-2 border-b border-white/10 bg-zinc-950/80 px-3 py-2.5 sm:px-4">
+          <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
+            <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-red-500/80" />
+            <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-amber-400/80" />
+            <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-400/80" />
+            <span className="ml-1 truncate font-mono text-[10px] tracking-wider text-zinc-400 sm:ml-2 sm:text-[11px]">
               dsp://selfie_dsp.jpeg · {resolutionText}
             </span>
           </div>
-          <span className="rounded-full border border-sky-400/30 bg-sky-500/10 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-widest text-sky-300">
+          <span className="shrink-0 rounded-full border border-sky-400/30 bg-sky-500/10 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-widest text-sky-300">
             {componentsCount} comp · {redPercent}%
           </span>
         </div>

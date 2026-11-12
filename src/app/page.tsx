@@ -27,54 +27,54 @@ export default function HomePage() {
   }, []);
 
   return (
-    <div className="relative flex min-h-screen flex-col text-zinc-100">
+    <div className="relative flex min-h-screen w-full flex-col overflow-x-clip text-zinc-100">
       <AsciiSignalBackdrop active={asciiActive} />
 
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-zinc-950/75 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-4 px-4 py-3.5 sm:px-6">
-          <div>
-            <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-sky-400">
+      <header className="sticky top-0 z-40 border-b border-white/10 bg-zinc-950/80 backdrop-blur-xl">
+        <div className="mx-auto flex max-w-7xl flex-col gap-3 px-4 py-3.5 sm:flex-row sm:flex-wrap sm:items-center sm:justify-between sm:gap-4 sm:px-6">
+          <div className="min-w-0">
+            <p className="truncate font-mono text-[10px] uppercase tracking-[0.18em] text-sky-400">
               Comunicaciones I · Universidad Tecnológica de Pereira
             </p>
-            <h1 className="font-display text-lg font-bold tracking-tight text-white sm:text-xl">
+            <h1 className="font-display text-base font-bold tracking-tight text-white sm:text-xl">
               Procesador, Compresor y Transceptor DSP de Imágenes
             </h1>
           </div>
 
-          <div className="flex flex-wrap items-center gap-2">
-            <nav className="flex flex-wrap gap-1.5" aria-label="Modos de operación">
+          <div className="flex max-w-full flex-wrap items-center gap-1.5 sm:gap-2">
+            <nav className="flex max-w-full flex-wrap gap-1.5" aria-label="Modos de operación">
               <button
                 type="button"
                 onClick={() => setTab("demo")}
-                className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold transition active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
+                className={`inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-[11px] font-semibold transition active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 sm:px-3.5 sm:py-2 sm:text-xs ${
                   tab === "demo"
                     ? "bg-sky-500 text-zinc-950 shadow-md shadow-sky-500/20"
                     : "border border-white/10 bg-zinc-900/80 text-zinc-300 hover:border-white/25 hover:text-white"
                 }`}
               >
-                <Activity className="h-3.5 w-3.5" /> Demostración Oficial
+                <Activity className="h-3.5 w-3.5 shrink-0" /> Demo Oficial
               </button>
               <button
                 type="button"
                 onClick={() => setTab("tx")}
-                className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold transition active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 ${
+                className={`inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-[11px] font-semibold transition active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 sm:px-3.5 sm:py-2 sm:text-xs ${
                   tab === "tx"
                     ? "bg-sky-500 text-zinc-950 shadow-md shadow-sky-500/20"
                     : "border border-white/10 bg-zinc-900/80 text-zinc-300 hover:border-white/25 hover:text-white"
                 }`}
               >
-                <Cpu className="h-3.5 w-3.5" /> Laboratorio TX
+                <Cpu className="h-3.5 w-3.5 shrink-0" /> Lab TX
               </button>
               <button
                 type="button"
                 onClick={() => setTab("rx")}
-                className={`inline-flex items-center gap-1.5 rounded-xl px-3.5 py-2 text-xs font-semibold transition active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 ${
+                className={`inline-flex items-center gap-1.5 rounded-xl px-2.5 py-1.5 text-[11px] font-semibold transition active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400 sm:px-3.5 sm:py-2 sm:text-xs ${
                   tab === "rx"
                     ? "bg-emerald-500 text-zinc-950 shadow-md shadow-emerald-500/20"
                     : "border border-white/10 bg-zinc-900/80 text-zinc-300 hover:border-white/25 hover:text-white"
                 }`}
               >
-                <Radio className="h-3.5 w-3.5" /> Receptor RX
+                <Radio className="h-3.5 w-3.5 shrink-0" /> Receptor RX
               </button>
             </nav>
 
@@ -83,10 +83,10 @@ export default function HomePage() {
               onClick={() => setAsciiActive((v) => !v)}
               aria-pressed={asciiActive}
               title="Alternar campo interactivo ASCII de portadora"
-              className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-zinc-900/75 px-3 py-2 font-mono text-[11px] text-zinc-300 transition hover:border-sky-400/40 hover:text-white active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
+              className="inline-flex items-center gap-1.5 rounded-xl border border-white/10 bg-zinc-900/75 px-2.5 py-1.5 font-mono text-[11px] text-zinc-300 transition hover:border-sky-400/40 hover:text-white active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400 sm:px-3 sm:py-2"
             >
               <Sparkles
-                className={`h-3.5 w-3.5 ${asciiActive ? "text-sky-400" : "text-zinc-500"}`}
+                className={`h-3.5 w-3.5 shrink-0 ${asciiActive ? "text-sky-400" : "text-zinc-500"}`}
               />
               ASCII {asciiActive ? "ON" : "OFF"}
             </button>
