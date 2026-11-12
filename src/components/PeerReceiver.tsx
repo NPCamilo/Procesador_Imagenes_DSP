@@ -57,10 +57,10 @@ export function PeerReceiver() {
   }
 
   return (
-    <div className="animate-reveal space-y-8">
+    <div className="min-w-0 space-y-8">
       <form
         onSubmit={handleReceive}
-        className="space-y-6 rounded-2xl border border-white/10 bg-zinc-900/75 p-6 shadow-xl backdrop-blur-md"
+        className="space-y-6 rounded-2xl border border-white/10 bg-zinc-900/90 p-5 shadow-xl sm:p-6"
       >
         <div className="border-b border-white/10 pb-4">
           <p className="font-mono text-[11px] uppercase tracking-widest text-emerald-400">

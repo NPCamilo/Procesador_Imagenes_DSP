@@ -1,9 +1,9 @@
 @import "tailwindcss";
 
 @theme inline {
-  --font-display: var(--font-space-grotesk), system-ui, sans-serif;
-  --font-sans: var(--font-inter), system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-display: var(--font-clash-display), system-ui, sans-serif;
+  --font-sans: var(--font-satoshi), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
 }
 
 :root {
@@ -22,26 +22,31 @@ body {
   overflow-x: clip;
 }
 
+/* Pure compositor reveal (transform3d + opacity, zero layout or blur cost) */
 @keyframes fadeInSlideUp {
   0% {
     opacity: 0;
-    transform: translateY(14px);
-    filter: blur(4px);
+    transform: translate3d(0, 12px, 0);
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 .animate-reveal {
-  animation: fadeInSlideUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: fadeInSlideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* Native HTML5 dialog backdrop and entry transition */
+/* Skip offscreen layout & paint work for lower DSP stations until scrolled into view */
+.station-deferred {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 540px;
+}
+
+/* Native HTML5 dialog backdrop and smooth open state */
 dialog::backdrop {
-  background: rgba(9, 9, 11, 0.85);
+  background: rgba(9, 9, 11, 0.84);
   backdrop-filter: blur(8px);
 }
 
@@ -61,7 +66,7 @@ dialog::backdrop {
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(255, 255, 255, 0.26);
 }
 
 @media (prefers-reduced-motion: reduce) {

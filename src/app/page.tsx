@@ -96,7 +96,7 @@ export default function HomePage() {
 
       <main className="mx-auto w-full max-w-7xl flex-1 px-4 py-8 sm:px-6">
         {tab === "demo" && (
-          <>
+          <div key="demo" className="animate-reveal">
             {demoError && (
               <div
                 role="alert"
@@ -119,11 +119,19 @@ export default function HomePage() {
               </div>
             )}
             {demoData && <DemoShowcase data={demoData} onSwitchTab={setTab} />}
-          </>
+          </div>
         )}
 
-        {tab === "tx" && <LiveTransmitter />}
-        {tab === "rx" && <PeerReceiver />}
+        {tab === "tx" && (
+          <div key="tx" className="animate-reveal">
+            <LiveTransmitter />
+          </div>
+        )}
+        {tab === "rx" && (
+          <div key="rx" className="animate-reveal">
+            <PeerReceiver />
+          </div>
+        )}
       </main>
 
       <footer className="mt-12 border-t border-white/10 bg-zinc-950/80 backdrop-blur-md">

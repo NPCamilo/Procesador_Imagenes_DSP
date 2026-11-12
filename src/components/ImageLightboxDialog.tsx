@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { toWebpSrc } from "./OptimizedPicture";
 
 export interface LightboxAsset {
   src: string;
@@ -66,11 +67,17 @@ export function ImageLightboxDialog({ asset, onClose }: ImageLightboxDialogProps
           </div>
 
           <div className="flex max-h-[78vh] items-center justify-center overflow-auto bg-zinc-900/60 p-4 sm:p-6">
-            <img
-              src={asset.src}
-              alt={asset.title}
-              className="max-h-[70vh] w-auto rounded-lg border border-white/10 object-contain shadow-lg"
-            />
+            <picture className="flex justify-center">
+              {toWebpSrc(asset.src) && (
+                <source srcSet={toWebpSrc(asset.src) as string} type="image/webp" />
+              )}
+              <img
+                src={asset.src}
+                alt={asset.title}
+                decoding="async"
+                className="max-h-[70vh] w-auto rounded-lg border border-white/10 object-contain shadow-lg"
+              />
+            </picture>
           </div>
         </div>
       )}
