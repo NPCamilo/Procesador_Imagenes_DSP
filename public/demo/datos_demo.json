@@ -1,0 +1,169 @@
+{
+  "project": {
+    "title": "Procesador, Compresor y Transceptor DSP de Imágenes",
+    "course": "Comunicaciones I — UTP",
+    "source_image": "selfie_dsp.jpeg"
+  },
+  "fase1": {
+    "sampling": {
+      "width_px": 1200,
+      "height_px": 1599,
+      "total_pixels": 1918800,
+      "channels": 3,
+      "spatial_sampling_rate_px": 1.0,
+      "spatial_nyquist_limit_cycles_per_px": 0.5,
+      "f_max_spatial_cycles_per_px": 0.0215,
+      "physical_dpi": null,
+      "equivalent_1d_sample_rate_hz": 16000,
+      "f_max_1d_hz": 3240.0,
+      "nyquist_1d_verdict": "CUMPLE (margen 4.76e+03 Hz)"
+    },
+    "red_filter": {
+      "num_components": 35,
+      "largest_area_px": 434912,
+      "largest_area_percent": 22.67,
+      "top_5_areas": [
+        434912,
+        46410,
+        22442,
+        13506,
+        9822
+      ]
+    }
+  },
+  "fase2": {
+    "working_resolution": "192x256",
+    "stream_4bits": {
+      "bits_per_sample": 4,
+      "bytes_per_sample": 0.5,
+      "quantization_levels": 16,
+      "delta": 0.0625,
+      "total_samples": 147456,
+      "total_bits": 589824,
+      "total_bytes": 73728,
+      "sqnr_empirical_db": 25.43,
+      "sqnr_theoretical_db": 25.84,
+      "first_64_bits": "0010001000100010001000100010001000100010001000100010001000100010",
+      "first_bytes_hex": "22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22 22",
+      "first_12_levels": [
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2,
+        2
+      ]
+    },
+    "stream_8bits": {
+      "bits_per_sample": 8,
+      "bytes_per_sample": 1.0,
+      "quantization_levels": 256,
+      "delta": 0.003906,
+      "total_samples": 147456,
+      "total_bits": 1179648,
+      "total_bytes": 147456,
+      "sqnr_empirical_db": 49.32,
+      "sqnr_theoretical_db": 49.92,
+      "first_64_bits": "0010001100100011001000110010001100100011001000110010010100100101",
+      "first_bytes_hex": "23 23 23 23 23 23 25 25 25 25 25 25 24 24 24 22 22 22 23 23 23 23 23 23",
+      "first_12_levels": [
+        35,
+        35,
+        35,
+        35,
+        35,
+        35,
+        37,
+        37,
+        37,
+        37,
+        37,
+        37
+      ]
+    },
+    "compression_lossless": {
+      "compressed_bytes": 15751,
+      "raw_bytes": 147456,
+      "ratio": 9.362,
+      "savings_percent": 89.32,
+      "psnr_db": 34.88
+    },
+    "compression_dct": {
+      "compressed_bytes": 15033,
+      "raw_bytes": 147456,
+      "ratio": 9.809,
+      "savings_percent": 89.81,
+      "psnr_db": 36.39
+    }
+  },
+  "fase3_4_5": {
+    "tx_manifest": {
+      "scheme": "BFSK",
+      "sampling_rate_hz": 48000,
+      "samples_per_symbol": 32,
+      "fsk_freqs_hz": [
+        1500.0,
+        3000.0
+      ],
+      "carrier_freq_hz": 3000.0,
+      "compression_method": "lossy_dct_zlib",
+      "compression_ratio": 6.531,
+      "savings_percent": 84.69,
+      "compressed_bytes": 3175,
+      "raw_bytes": 20736,
+      "crc32_hex": "0xDDAD7BCC",
+      "audio_duration_s": 17.007,
+      "resolution": [
+        72,
+        96
+      ]
+    },
+    "sync_offset_samples": 960,
+    "ber_bfsk": 0.0,
+    "crc_valid": true,
+    "qam_ber": 0.0,
+    "image_metrics": {
+      "psnr_db": 33.19,
+      "ssim": 0.9502,
+      "pearson_corr": 0.9937,
+      "mse": 0.000479,
+      "compression_ratio": 6.531
+    },
+    "audio_metrics": {
+      "mse": 0.0004,
+      "rmse": 0.0192,
+      "snr_db": 20.9349,
+      "pearson_corr": 0.996
+    }
+  },
+  "assets": {
+    "original_png": "/demo/selfie_original.png",
+    "red_splash_png": "/demo/selfie_solo_rojo.png",
+    "reconstructed_png": "/demo/imagen_recibida.png",
+    "reconstructed_svg": "/demo/imagen_recibida.svg",
+    "fig_original": "/demo/01_original_y_canales.png",
+    "fig_red_filter": "/demo/02_filtro_rojo_mayor_area.png",
+    "fig_sampling": "/demo/03_analisis_frecuencia_muestreo.png",
+    "fig_nqs": "/demo/04_estudio_muestreo_nqs.png",
+    "fig_quantization": "/demo/05_resolucion_byte_bit_sqnr.png",
+    "fig_compression": "/demo/06_compresion_dpcm_vs_dct.png",
+    "fig_mod_bfsk": "/demo/07_modulacion_bfsk.png",
+    "fig_demod_qam": "/demo/08_demodulacion_16qam.png",
+    "fig_demod_bfsk": "/demo/09_demodulacion_bfsk.png",
+    "fig_comparison": "/demo/10_comparativa_original_vs_reconstruida.png",
+    "wav_modulated_bfsk": "/demo/senal_modulada_para_companero.wav",
+    "wav_demodulated_bfsk": "/demo/demodulada_bfsk.wav",
+    "wav_audio_original": "/demo/audio_original.wav",
+    "wav_audio_reconstructed": "/demo/audio_recibido_reconstruido.wav",
+    "wav_modulated_am": "/demo/modulada_am.wav",
+    "wav_modulated_fm": "/demo/modulada_fm.wav",
+    "packet_dspimg": "/demo/paquete_comprimido.dspimg",
+    "peer_zip": "/demo/paquete_envio_companero.zip"
+  }
+}

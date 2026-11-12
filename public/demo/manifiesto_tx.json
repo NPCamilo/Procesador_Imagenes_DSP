@@ -1,0 +1,21 @@
+{
+  "scheme": "BFSK",
+  "sampling_rate_hz": 48000,
+  "samples_per_symbol": 32,
+  "fsk_freqs_hz": [
+    1500.0,
+    3000.0
+  ],
+  "carrier_freq_hz": 3000.0,
+  "compression_method": "lossy_dct_zlib",
+  "compression_ratio": 6.531,
+  "savings_percent": 84.69,
+  "compressed_bytes": 3175,
+  "raw_bytes": 20736,
+  "crc32_hex": "0xDDAD7BCC",
+  "audio_duration_s": 17.007,
+  "resolution": [
+    72,
+    96
+  ]
+}
