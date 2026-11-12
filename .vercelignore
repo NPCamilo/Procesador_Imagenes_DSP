@@ -3,7 +3,10 @@ tests/
 .github/
 .venv/
 venv/
+node_modules/
+.next/
 __pycache__/
 *.pyc
 docs/
-data/output/*.tmp
+data/output/
+*.tmp
