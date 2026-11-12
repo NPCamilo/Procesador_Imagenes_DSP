@@ -103,10 +103,10 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
   };
 
   return (
-    <div className="space-y-12">
+    <div className="min-w-0 space-y-10 sm:space-y-12">
       {/* BENTO HERO SECTION (Phases 4, 5, 6, 8) */}
-      <section className="animate-reveal grid items-center gap-8 rounded-3xl border border-white/10 bg-zinc-900/65 p-6 shadow-2xl backdrop-blur-xl sm:p-8 lg:grid-cols-12 lg:gap-10">
-        <div className="space-y-6 lg:col-span-7">
+      <section className="animate-reveal grid min-w-0 items-center gap-8 overflow-hidden rounded-3xl border border-white/10 bg-zinc-900/65 p-4 shadow-2xl backdrop-blur-xl sm:p-8 lg:grid-cols-12 lg:gap-10">
+        <div className="min-w-0 space-y-6 lg:col-span-7">
           <div className="inline-flex items-center gap-2 rounded-full border border-sky-400/25 bg-sky-500/10 px-3 py-1 font-mono text-[11px] uppercase tracking-widest text-sky-300">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400" />
             Pipeline Validado · 6 Etapas DSP · UTP
@@ -155,8 +155,8 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
           </div>
 
           {/* Quick hardware specs micro-strip */}
-          <dl className="grid grid-cols-3 gap-4 border-t border-white/10 pt-5">
-            <div>
+          <dl className="grid grid-cols-1 gap-3 border-t border-white/10 pt-5 sm:grid-cols-3 sm:gap-4">
+            <div className="min-w-0">
               <dt className="font-mono text-[10px] uppercase tracking-widest text-zinc-400">
                 Muestreo 1D Eq.
               </dt>
@@ -164,7 +164,7 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
                 {fase1.sampling.equivalent_1d_sample_rate_hz.toLocaleString()} Hz
               </dd>
             </div>
-            <div>
+            <div className="min-w-0">
               <dt className="font-mono text-[10px] uppercase tracking-widest text-zinc-400">
                 Integridad CRC32
               </dt>
@@ -172,7 +172,7 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
                 {fase3_4_5.tx_manifest.crc32_hex}
               </dd>
             </div>
-            <div>
+            <div className="min-w-0">
               <dt className="font-mono text-[10px] uppercase tracking-widest text-zinc-400">
                 Audio DAC SNR
               </dt>
@@ -183,7 +183,7 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
           </dl>
         </div>
 
-        <div className="lg:col-span-5">
+        <div className="min-w-0 lg:col-span-5">
           <BeforeAfterComparator
             beforeSrc={assets.original_png}
             afterSrc={assets.red_splash_png}
@@ -337,32 +337,32 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
           </p>
         </header>
 
-        <div className="grid gap-4 lg:grid-cols-3">
-          <div className="rounded-xl border border-white/10 bg-zinc-950/80 p-4 font-mono text-xs lg:col-span-2">
+        <div className="grid min-w-0 gap-4 lg:grid-cols-3">
+          <div className="min-w-0 overflow-hidden rounded-xl border border-white/10 bg-zinc-950/80 p-4 font-mono text-xs lg:col-span-2">
             <p className="text-[10px] uppercase tracking-widest text-zinc-400">
               Trama Digital Cuantizada (4 bits/muestra · {fase2.working_resolution})
             </p>
-            <div className="mt-2 break-all text-sky-300">
+            <div className="mt-2 break-all text-sky-300 [overflow-wrap:anywhere]">
               <span className="text-zinc-500">BIN[0..63]: </span>
               {fase2.stream_4bits.first_64_bits}
             </div>
-            <div className="mt-1.5 break-all text-amber-300">
+            <div className="mt-1.5 break-all text-amber-300 [overflow-wrap:anywhere]">
               <span className="text-zinc-500">HEX: </span>
               {fase2.stream_4bits.first_bytes_hex}
             </div>
           </div>
 
-          <div className="rounded-xl border border-white/10 bg-zinc-950/80 p-4 text-xs">
+          <div className="min-w-0 rounded-xl border border-white/10 bg-zinc-950/80 p-4 text-xs">
             <p className="font-mono text-[10px] uppercase tracking-widest text-zinc-400">
               Comparativa Lossless vs DCT
             </p>
-            <div className="mt-2 flex items-center justify-between text-zinc-300">
+            <div className="mt-2 flex flex-wrap items-center justify-between gap-2 text-zinc-300">
               <span>DPCM + Zlib (Sin pérdida):</span>
               <span className="font-mono font-semibold text-zinc-100">
                 {fase2.compression_lossless.ratio}× ({fase2.compression_lossless.savings_percent}%)
               </span>
             </div>
-            <div className="mt-1.5 flex items-center justify-between text-zinc-300">
+            <div className="mt-1.5 flex flex-wrap items-center justify-between gap-2 text-zinc-300">
               <span>DCT 8×8 + Zlib:</span>
               <span className="font-mono font-semibold text-emerald-400">
                 {fase2.compression_dct.ratio}× ({fase2.compression_dct.savings_percent}%)
@@ -440,12 +440,17 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
           ].map((track) => (
             <div
               key={track.title}
-              className={`rounded-xl border bg-zinc-950/85 p-3.5 ${track.color}`}
+              className={`min-w-0 overflow-hidden rounded-xl border bg-zinc-950/85 p-3.5 ${track.color}`}
             >
               <p className="mb-2.5 flex items-center gap-1.5 text-xs font-semibold">
-                <Volume2 className="h-4 w-4" /> {track.title}
+                <Volume2 className="h-4 w-4 shrink-0" /> {track.title}
               </p>
-              <audio controls className="h-9 w-full" src={track.src} />
+              <audio
+                controls
+                preload="metadata"
+                className="h-9 w-full min-w-0 max-w-full"
+                src={track.src}
+              />
             </div>
           ))}
         </div>
@@ -520,23 +525,33 @@ export function DemoShowcase({ data, onSwitchTab }: DemoShowcaseProps) {
           </div>
         </header>
 
-        <div className="grid gap-4 md:grid-cols-2">
-          <div className="rounded-xl border border-sky-500/20 bg-zinc-950/85 p-4">
+        <div className="grid min-w-0 gap-4 md:grid-cols-2">
+          <div className="min-w-0 overflow-hidden rounded-xl border border-sky-500/20 bg-zinc-950/85 p-4">
             <p className="mb-2.5 text-xs font-semibold text-sky-400">
               Audio Señal Original (Scanline 1D)
             </p>
-            <audio controls className="h-9 w-full" src={assets.wav_audio_original} />
+            <audio
+              controls
+              preload="metadata"
+              className="h-9 w-full min-w-0 max-w-full"
+              src={assets.wav_audio_original}
+            />
           </div>
-          <div className="rounded-xl border border-emerald-500/20 bg-zinc-950/85 p-4">
+          <div className="min-w-0 overflow-hidden rounded-xl border border-emerald-500/20 bg-zinc-950/85 p-4">
             <p className="mb-2.5 text-xs font-semibold text-emerald-400">
               Audio Señal Reconstruida (DAC Sinc)
             </p>
-            <audio controls className="h-9 w-full" src={assets.wav_audio_reconstructed} />
+            <audio
+              controls
+              preload="metadata"
+              className="h-9 w-full min-w-0 max-w-full"
+              src={assets.wav_audio_reconstructed}
+            />
           </div>
         </div>
 
-        <div className="grid gap-4 md:grid-cols-3">
-          <div className="rounded-xl border border-white/10 bg-zinc-950/80 p-4">
+        <div className="grid min-w-0 gap-4 md:grid-cols-3">
+          <div className="min-w-0 rounded-xl border border-white/10 bg-zinc-950/80 p-4">
             <div className="mb-3 flex items-center justify-between">
               <p className="text-xs font-semibold text-zinc-100">Imagen Reconstruida (PNG)</p>
               <button

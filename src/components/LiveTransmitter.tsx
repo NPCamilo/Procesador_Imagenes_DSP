@@ -342,31 +342,32 @@ export function LiveTransmitter() {
             />
           </div>
 
-          <div className="grid gap-4 md:grid-cols-2">
-            <div className="rounded-xl border border-sky-500/20 bg-zinc-950/85 p-3.5">
+          <div className="grid min-w-0 gap-4 md:grid-cols-2">
+            <div className="min-w-0 overflow-hidden rounded-xl border border-sky-500/20 bg-zinc-950/85 p-3.5">
               <p className="mb-2 text-xs font-semibold text-sky-400">
                 Audio Modulado ({result.fase3_4.manifest.audio_duration_s} s)
               </p>
-              <audio controls className="h-9 w-full" src={result.fase3_4.modulated_wav_url} />
+              <audio controls preload="metadata" className="h-9 w-full min-w-0 max-w-full" src={result.fase3_4.modulated_wav_url} />
             </div>
-            <div className="rounded-xl border border-emerald-500/20 bg-zinc-950/85 p-3.5">
+            <div className="min-w-0 overflow-hidden rounded-xl border border-emerald-500/20 bg-zinc-950/85 p-3.5">
               <p className="mb-2 text-xs font-semibold text-emerald-400">
                 Audio Demodulado (Banda Base)
               </p>
-              <audio controls className="h-9 w-full" src={result.fase3_4.demodulated_wav_url} />
+              <audio controls preload="metadata" className="h-9 w-full min-w-0 max-w-full" src={result.fase3_4.demodulated_wav_url} />
             </div>
-            <div className="rounded-xl border border-white/10 bg-zinc-950/85 p-3.5">
+            <div className="min-w-0 overflow-hidden rounded-xl border border-white/10 bg-zinc-950/85 p-3.5">
               <p className="mb-2 text-xs font-semibold text-zinc-200">Audio Original Scanline 1D</p>
-              <audio controls className="h-9 w-full" src={result.fase5.orig_audio_wav_url} />
+              <audio controls preload="metadata" className="h-9 w-full min-w-0 max-w-full" src={result.fase5.orig_audio_wav_url} />
             </div>
             {result.fase5.reconstructed_audio_wav_url && (
-              <div className="rounded-xl border border-amber-500/20 bg-zinc-950/85 p-3.5">
+              <div className="min-w-0 overflow-hidden rounded-xl border border-amber-500/20 bg-zinc-950/85 p-3.5">
                 <p className="mb-2 text-xs font-semibold text-amber-400">
                   Audio Reconstruido DAC
                 </p>
                 <audio
                   controls
-                  className="h-9 w-full"
+                  preload="metadata"
+                  className="h-9 w-full min-w-0 max-w-full"
                   src={result.fase5.reconstructed_audio_wav_url}
                 />
               </div>

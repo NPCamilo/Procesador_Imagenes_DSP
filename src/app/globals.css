@@ -12,13 +12,14 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: clip;
 }
 
 body {
   background-color: #09090b;
   color: #f4f4f5;
   font-family: var(--font-sans);
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 @keyframes fadeInSlideUp {
