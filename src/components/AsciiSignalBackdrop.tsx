@@ -4,19 +4,24 @@ import { useEffect, useRef } from "react";
 
 interface AsciiSignalBackdropProps {
   active?: boolean;
+  theme?: "dark" | "light";
 }
 
 const ASCII_RAMP = " .:-=+*#%@";
 
-// Precomputed color lookup tables avoid per-cell template string allocation (0 GC churn)
-const NEUTRAL_PALETTE = Array.from({ length: ASCII_RAMP.length }, (_, idx) => {
+const DARK_NEUTRAL = Array.from({ length: ASCII_RAMP.length }, (_, idx) => {
   const alpha = (0.06 + (idx / ASCII_RAMP.length) * 0.14).toFixed(3);
   return `rgba(161, 161, 170, ${alpha})`;
 });
-const BOOSTED_COLOR = "rgba(56, 189, 248, 0.34)";
-const PEAK_COLOR = "rgba(244, 63, 94, 0.22)";
+const LIGHT_NEUTRAL = Array.from({ length: ASCII_RAMP.length }, (_, idx) => {
+  const alpha = (0.06 + (idx / ASCII_RAMP.length) * 0.13).toFixed(3);
+  return `rgba(24, 24, 27, ${alpha})`;
+});
 
-export function AsciiSignalBackdrop({ active = true }: AsciiSignalBackdropProps) {
+export function AsciiSignalBackdrop({
+  active = true,
+  theme = "dark",
+}: AsciiSignalBackdropProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -24,6 +29,12 @@ export function AsciiSignalBackdrop({ active = true }: AsciiSignalBackdropProps)
     if (!canvas) return;
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
+
+    const palette = theme === "dark" ? DARK_NEUTRAL : LIGHT_NEUTRAL;
+    const boostedColor =
+      theme === "dark" ? "rgba(56, 189, 248, 0.34)" : "rgba(2, 132, 199, 0.34)";
+    const peakColor =
+      theme === "dark" ? "rgba(244, 63, 94, 0.22)" : "rgba(225, 29, 72, 0.22)";
 
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     let animId = 0;
@@ -45,7 +56,6 @@ export function AsciiSignalBackdrop({ active = true }: AsciiSignalBackdropProps)
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       width = window.innerWidth;
       height = window.innerHeight;
-      // Slightly wider grid on mobile viewports reduces canvas fillText calls ~40%
       cell = width < 768 ? 28 : 22;
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
@@ -102,10 +112,10 @@ export function AsciiSignalBackdrop({ active = true }: AsciiSignalBackdropProps)
           const ch = ASCII_RAMP[charIdx];
           ctx.fillStyle =
             dist < 240 && charIdx >= 6
-              ? BOOSTED_COLOR
+              ? boostedColor
               : charIdx >= 7
-                ? PEAK_COLOR
-                : NEUTRAL_PALETTE[charIdx];
+                ? peakColor
+                : palette[charIdx];
           ctx.fillText(ch, x, y);
         }
       }
@@ -152,27 +162,53 @@ export function AsciiSignalBackdrop({ active = true }: AsciiSignalBackdropProps)
       window.removeEventListener("resize", resize);
       window.removeEventListener("pointermove", onPointerMove);
     };
-  }, [active]);
+  }, [active, theme]);
 
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-zinc-950 [contain:strict]"
+      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-(--canvas) transition-colors duration-300 [contain:strict]"
     >
-      <div className="absolute inset-0 bg-[radial-gradient(#ffffff12_1px,transparent_1px)] [background-size:24px_24px] [mask-image:radial-gradient(ellipse_75%_65%_at_50%_20%,#000_55%,transparent_100%)]" />
-
-      <canvas
-        ref={canvasRef}
-        className={`absolute inset-0 transition-opacity duration-500 [mask-image:radial-gradient(ellipse_85%_80%_at_50%_35%,#000_50%,transparent_100%)] ${
-          active ? "opacity-100" : "opacity-35"
+      {/* Technical Dot Matrix */}
+      <div
+        className={`absolute inset-0 [background-size:24px_24px] [mask-image:radial-gradient(ellipse_75%_65%_at_50%_20%,#000_55%,transparent_100%)] ${
+          theme === "dark"
+            ? "bg-[radial-gradient(#ffffff12_1px,transparent_1px)]"
+            : "bg-[radial-gradient(#11111314_1px,transparent_1px)]"
         }`}
       />
 
-      <div className="absolute -left-32 -top-40 h-[520px] w-[520px] rounded-full bg-sky-500/12 blur-[130px]" />
-      <div className="absolute -right-24 top-16 h-[460px] w-[460px] rounded-full bg-red-600/10 blur-[140px]" />
-      <div className="absolute bottom-0 left-1/3 h-[380px] w-[560px] rounded-full bg-emerald-500/8 blur-[140px]" />
+      {/* Interactive ASCII Carrier Matrix */}
+      <canvas
+        ref={canvasRef}
+        className={`absolute inset-0 transition-opacity duration-500 [mask-image:radial-gradient(ellipse_85%_80%_at_50%_35%,#000_50%,transparent_100%)] ${
+          active ? "opacity-100" : "opacity-25"
+        }`}
+      />
 
-      <svg className="absolute inset-0 h-full w-full opacity-[0.03] mix-blend-overlay">
+      {/* Atmospheric Radial Glows adapted cleanly to Dark/Light canvas */}
+      <div
+        className={`absolute -left-32 -top-40 h-[520px] w-[520px] rounded-full blur-[130px] ${
+          theme === "dark" ? "bg-sky-500/12" : "bg-sky-500/10"
+        }`}
+      />
+      <div
+        className={`absolute -right-24 top-16 h-[460px] w-[460px] rounded-full blur-[140px] ${
+          theme === "dark" ? "bg-red-600/10" : "bg-rose-500/8"
+        }`}
+      />
+      <div
+        className={`absolute bottom-0 left-1/3 h-[380px] w-[560px] rounded-full blur-[140px] ${
+          theme === "dark" ? "bg-emerald-500/8" : "bg-emerald-500/8"
+        }`}
+      />
+
+      {/* Monochromatic SVG Fractal Grain */}
+      <svg
+        className={`absolute inset-0 h-full w-full mix-blend-overlay ${
+          theme === "dark" ? "opacity-[0.03]" : "opacity-[0.025]"
+        }`}
+      >
         <filter id="dsp-noise-grain">
           <feTurbulence
             type="fractalNoise"

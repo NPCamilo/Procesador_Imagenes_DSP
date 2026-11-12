@@ -237,7 +237,7 @@ export function BeforeAfterComparator({
       <div
         ref={frameRef}
         onPointerLeave={handlePointerLeave}
-        className="relative overflow-hidden rounded-2xl border border-white/15 bg-zinc-900/95 shadow-[0_28px_80px_-18px_rgba(0,0,0,0.85)] will-change-transform md:[transform-style:preserve-3d] md:[transform:rotateX(var(--rx,2.5deg))_rotateY(var(--ry,-3.5deg))]"
+        className="relative overflow-hidden rounded-2xl border border-(--hairline) bg-(--surface-elevated) shadow-[0_24px_70px_-20px_rgba(0,0,0,0.45)] dark:shadow-[0_28px_80px_-18px_rgba(0,0,0,0.85)] will-change-transform md:[transform-style:preserve-3d] md:[transform:rotateX(var(--rx,2.5deg))_rotateY(var(--ry,-3.5deg))]"
       >
         <div
           aria-hidden="true"
@@ -245,22 +245,22 @@ export function BeforeAfterComparator({
         />
 
         {/* Studio Chassis Header */}
-        <div className="relative z-10 flex items-center justify-between gap-2 border-b border-white/10 bg-zinc-950/90 px-3 py-2.5 sm:px-4">
+        <div className="relative z-10 flex items-center justify-between gap-2 border-b border-(--hairline) bg-(--surface) px-3 py-2.5 sm:px-4">
           <div className="flex min-w-0 items-center gap-1.5 sm:gap-2">
             <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-red-500/85" />
             <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-amber-400/85" />
             <span className="h-2.5 w-2.5 shrink-0 rounded-full bg-emerald-400/85" />
-            <span className="ml-1 truncate font-mono text-[10px] tracking-wider text-zinc-400 sm:ml-2 sm:text-[11px]">
+            <span className="ml-1 truncate font-mono text-[10px] tracking-wider text-(--ink-muted) sm:ml-2 sm:text-[11px]">
               dsp://selfie_dsp.jpeg · {resolutionText}
             </span>
           </div>
-          <span className="shrink-0 rounded-full border border-sky-400/30 bg-sky-500/10 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-widest text-sky-300">
+          <span className="shrink-0 rounded-full border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 font-mono text-[10px] font-medium uppercase tracking-widest text-sky-700 dark:text-sky-300">
             {componentsCount} comp · {redPercent}%
           </span>
         </div>
 
         {/* Crop Mode & Sweep Controls Bar */}
-        <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 border-b border-white/10 bg-zinc-950/60 px-3 py-2 sm:px-4">
+        <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 border-b border-(--hairline) bg-(--surface-elevated) px-3 py-2 sm:px-4">
           <div className="flex items-center gap-1" role="group" aria-label="Modo de recorte">
             {(Object.keys(CROP_CONFIG) as CropMode[]).map((mode) => (
               <button
@@ -270,7 +270,7 @@ export function BeforeAfterComparator({
                 className={`rounded-lg px-2 py-1 font-mono text-[10px] font-medium transition active:scale-[0.97] ${
                   cropMode === mode
                     ? "bg-sky-500 text-zinc-950"
-                    : "text-zinc-400 hover:bg-white/10 hover:text-zinc-200"
+                    : "text-(--ink-muted) hover:bg-black/5 hover:text-(--ink) dark:hover:bg-white/10"
                 }`}
               >
                 {CROP_CONFIG[mode].label}
@@ -282,12 +282,12 @@ export function BeforeAfterComparator({
             type="button"
             onClick={triggerSweep}
             disabled={sweeping}
-            className="inline-flex items-center gap-1 rounded-lg border border-white/15 bg-zinc-900 px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-zinc-200 transition hover:border-sky-400/50 hover:text-white active:scale-[0.97] disabled:opacity-60"
+            className="inline-flex items-center gap-1 rounded-lg border border-(--hairline) bg-(--surface) px-2.5 py-1 font-mono text-[10px] uppercase tracking-wider text-(--ink) transition hover:border-sky-500/50 active:scale-[0.97] disabled:opacity-60"
           >
             {sweeping ? (
-              <Sparkles className="h-3 w-3 text-sky-400" />
+              <Sparkles className="h-3 w-3 text-sky-500" />
             ) : (
-              <Play className="h-3 w-3 text-sky-400" />
+              <Play className="h-3 w-3 text-sky-500" />
             )}
             {sweeping ? "Barriendo..." : "Barrido"}
           </button>
@@ -357,8 +357,8 @@ export function BeforeAfterComparator({
         </div>
 
         {/* Bottom Studio Control Bar */}
-        <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 border-t border-white/10 bg-zinc-950/90 px-4 py-2.5">
-          <span ref={readoutRef} className="font-mono text-[11px] text-zinc-400">
+        <div className="relative z-10 flex flex-wrap items-center justify-between gap-2 border-t border-(--hairline) bg-(--surface) px-4 py-2.5">
+          <span ref={readoutRef} className="font-mono text-[11px] text-(--ink-muted)">
             54% RGB / 46% Rojo
           </span>
           {onInspectImage && (
@@ -372,7 +372,7 @@ export function BeforeAfterComparator({
                     `Captura fuente sin procesar · ${resolutionText}`
                   )
                 }
-                className="rounded-lg border border-white/10 bg-zinc-800/80 px-2.5 py-1 text-xs font-medium text-zinc-200 transition hover:-translate-y-0.5 hover:border-white/25 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
+                className="rounded-lg border border-(--hairline) bg-(--surface-elevated) px-2.5 py-1 text-xs font-medium text-(--ink) transition hover:-translate-y-0.5 hover:border-sky-500/40 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
               >
                 Ampliar RGB
               </button>
@@ -385,7 +385,7 @@ export function BeforeAfterComparator({
                     `Región roja conexa más grande (${componentsCount} componentes detectados, ${redPercent}% del área)`
                   )
                 }
-                className="rounded-lg border border-red-500/25 bg-red-500/10 px-2.5 py-1 text-xs font-medium text-red-200 transition hover:-translate-y-0.5 hover:bg-red-500/20 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
+                className="rounded-lg border border-red-500/30 bg-red-500/10 px-2.5 py-1 text-xs font-medium text-red-700 dark:text-red-200 transition hover:-translate-y-0.5 hover:bg-red-500/20 active:scale-[0.98] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-red-400"
               >
                 Ampliar Filtro
               </button>

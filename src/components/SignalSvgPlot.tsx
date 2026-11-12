@@ -63,7 +63,7 @@ export function SignalPolylinePlot({
 
   if (!values || values.length === 0) {
     return (
-      <div className="rounded-xl border border-white/10 bg-zinc-900/75 p-4 text-xs text-zinc-400 backdrop-blur-md">
+      <div className="rounded-xl border border-(--hairline) bg-(--surface) p-4 text-xs text-(--ink-muted)">
         {title}: sin datos muestreados
       </div>
     );
@@ -74,16 +74,16 @@ export function SignalPolylinePlot({
     xValues && xValues.length > 0 ? Math.round(xValues[xValues.length - 1]) : values.length;
 
   return (
-    <div className="rounded-xl border border-white/10 bg-zinc-900/75 p-4 backdrop-blur-md">
+    <div className="rounded-xl border border-(--hairline) bg-(--surface) p-4">
       <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <span className="font-display text-xs font-semibold tracking-tight text-zinc-100">
+        <span className="font-display text-xs font-semibold tracking-tight text-(--ink)">
           {title}
         </span>
-        <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-wider text-zinc-400">
+        <div className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-wider text-(--ink-muted)">
           <span>
             {yLabel} [{yLo.toFixed(1)} .. {yHi.toFixed(1)}]
           </span>
-          <span className="rounded border border-white/10 bg-zinc-950/70 px-1.5 py-0.5 text-zinc-300">
+          <span className="rounded border border-(--hairline) bg-(--surface-elevated) px-1.5 py-0.5 text-(--ink)">
             |Pico| {peak.toFixed(2)}
           </span>
         </div>
@@ -91,7 +91,7 @@ export function SignalPolylinePlot({
 
       <svg
         viewBox={`0 0 ${width} ${height}`}
-        className="h-44 w-full rounded-lg border border-white/5 bg-zinc-950/90"
+        className="h-44 w-full rounded-lg border border-(--hairline) bg-zinc-950"
         role="img"
         aria-label={title}
       >
@@ -183,16 +183,16 @@ export function ConstellationPlot({ title, points }: ConstellationProps) {
     : 3.5;
 
   return (
-    <div className="rounded-xl border border-white/10 bg-zinc-900/75 p-4 backdrop-blur-md">
+    <div className="rounded-xl border border-(--hairline) bg-(--surface) p-4">
       <div className="mb-3 flex items-center justify-between">
-        <span className="font-display text-xs font-semibold text-zinc-100">{title}</span>
-        <span className="font-mono text-[10px] uppercase tracking-wider text-emerald-400">
+        <span className="font-display text-xs font-semibold text-(--ink)">{title}</span>
+        <span className="font-mono text-[10px] uppercase tracking-wider text-emerald-600 dark:text-emerald-400">
           {points.length} símbolos I/Q
         </span>
       </div>
       <svg
         viewBox={`0 0 ${size} ${size}`}
-        className="mx-auto h-44 w-44 rounded-lg border border-white/5 bg-zinc-950/90"
+        className="mx-auto h-44 w-44 rounded-lg border border-(--hairline) bg-zinc-950"
         role="img"
         aria-label={title}
       >

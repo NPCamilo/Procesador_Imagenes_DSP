@@ -65,29 +65,29 @@ export function LiveTransmitter() {
     <div className="min-w-0 space-y-8">
       <form
         onSubmit={handleSubmit}
-        className="space-y-6 rounded-2xl border border-white/10 bg-zinc-900/90 p-5 shadow-xl sm:p-6"
+        className="space-y-6 rounded-2xl border border-(--hairline) bg-(--surface) p-5 sm:p-6"
       >
-        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-white/10 pb-4">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-(--hairline) pb-4">
           <div>
-            <p className="font-mono text-[11px] uppercase tracking-widest text-sky-400">
+            <p className="font-mono text-[11px] uppercase tracking-widest text-sky-600 dark:text-sky-400">
               Banco de Pruebas en Tiempo Real · FastAPI DSP
             </p>
-            <h2 className="mt-0.5 font-display text-xl font-bold text-white">
-              Laboratorio Transmisor y Simulador de Canal
-            </h2>
+            <h3 className="mt-0.5 font-display text-xl font-bold text-(--ink)">
+              Transmisor en Vivo y Simulador de Canal
+            </h3>
           </div>
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-white/10 bg-zinc-950/75 px-3 py-1 font-mono text-[11px] text-zinc-300">
-            <Sliders className="h-3.5 w-3.5 text-sky-400" /> {scheme} · {bits} bits
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-(--hairline) bg-(--surface-elevated) px-3 py-1 font-mono text-[11px] text-(--ink)">
+            <Sliders className="h-3.5 w-3.5 text-sky-500" /> {scheme} · {bits} bits
           </span>
         </div>
 
         <div className="grid gap-4 md:grid-cols-4">
-          <div className="md:col-span-2">
-            <label className="mb-1.5 block text-xs font-medium text-zinc-300">
+          <div className="min-w-0 md:col-span-2">
+            <label className="mb-1.5 block text-xs font-medium text-(--ink)">
               Fotografía JPG / JPEG / PNG (opcional — si se omite usa Selfie DSP)
             </label>
-            <label className="flex cursor-pointer items-center gap-2.5 rounded-xl border border-dashed border-white/20 bg-zinc-950/80 px-3.5 py-2.5 text-xs text-zinc-300 transition hover:border-sky-400/60 hover:text-white">
-              <Upload className="h-4 w-4 shrink-0 text-sky-400" />
+            <label className="flex cursor-pointer items-center gap-2.5 rounded-xl border border-dashed border-(--hairline) bg-(--surface-elevated) px-3.5 py-2.5 text-xs text-(--ink-muted) transition hover:border-sky-500/60 hover:text-(--ink)">
+              <Upload className="h-4 w-4 shrink-0 text-sky-500" />
               <span className="truncate">
                 {file ? file.name : "Seleccionar fotografía o usar Selfie DSP por defecto"}
               </span>
@@ -100,14 +100,14 @@ export function LiveTransmitter() {
             </label>
           </div>
 
-          <div>
-            <label className="mb-1.5 block text-xs font-medium text-zinc-300">
+          <div className="min-w-0">
+            <label className="mb-1.5 block text-xs font-medium text-(--ink)">
               Esquema de Modulación
             </label>
             <select
               value={scheme}
               onChange={(e) => setScheme(e.target.value)}
-              className="w-full rounded-xl border border-white/15 bg-zinc-950/85 px-3 py-2.5 text-xs text-zinc-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
+              className="w-full rounded-xl border border-(--hairline) bg-(--surface-elevated) px-3 py-2.5 text-xs text-(--ink) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
             >
               <option value="BFSK">BFSK (1500 bps)</option>
               <option value="MFSK">MFSK 4-FSK (2000 bps)</option>
@@ -117,22 +117,22 @@ export function LiveTransmitter() {
             </select>
           </div>
 
-          <div>
-            <label className="mb-1.5 block text-xs font-medium text-zinc-300">Compresión</label>
+          <div className="min-w-0">
+            <label className="mb-1.5 block text-xs font-medium text-(--ink)">Compresión</label>
             <select
               value={compression}
               onChange={(e) => setCompression(e.target.value)}
-              className="w-full rounded-xl border border-white/15 bg-zinc-950/85 px-3 py-2.5 text-xs text-zinc-100 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
+              className="w-full rounded-xl border border-(--hairline) bg-(--surface-elevated) px-3 py-2.5 text-xs text-(--ink) focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
             >
               <option value="lossy_dct_zlib">DCT 8×8 + Zlib (Alta compresión)</option>
               <option value="lossless_dpcm_zlib">DPCM + Zlib (Sin pérdida)</option>
             </select>
           </div>
 
-          <div className="rounded-xl border border-white/10 bg-zinc-950/60 p-3">
-            <label className="mb-1.5 flex items-center justify-between text-xs font-medium text-zinc-300">
+          <div className="min-w-0 rounded-xl border border-(--hairline) bg-(--surface-elevated) p-3">
+            <label className="mb-1.5 flex items-center justify-between text-xs font-medium text-(--ink)">
               <span>Resolución [Byte/Bit]</span>
-              <span className="font-mono text-sky-400">{bits} bits</span>
+              <span className="font-mono text-sky-600 dark:text-sky-400">{bits} bits</span>
             </label>
             <input
               type="range"
@@ -140,14 +140,14 @@ export function LiveTransmitter() {
               max={8}
               value={bits}
               onChange={(e) => setBits(Number(e.target.value))}
-              className="w-full accent-sky-400"
+              className="w-full accent-sky-500"
             />
           </div>
 
-          <div className="rounded-xl border border-white/10 bg-zinc-950/60 p-3">
-            <label className="mb-1.5 flex items-center justify-between text-xs font-medium text-zinc-300">
+          <div className="min-w-0 rounded-xl border border-(--hairline) bg-(--surface-elevated) p-3">
+            <label className="mb-1.5 flex items-center justify-between text-xs font-medium text-(--ink)">
               <span>Calidad DCT</span>
-              <span className="font-mono text-sky-400">{quality}%</span>
+              <span className="font-mono text-sky-600 dark:text-sky-400">{quality}%</span>
             </label>
             <input
               type="range"
@@ -155,13 +155,13 @@ export function LiveTransmitter() {
               max={95}
               value={quality}
               onChange={(e) => setQuality(Number(e.target.value))}
-              className="w-full accent-sky-400"
+              className="w-full accent-sky-500"
             />
           </div>
 
-          <div className="rounded-xl border border-white/10 bg-zinc-950/60 p-3">
-            <label className="mb-1.5 block text-xs font-medium text-zinc-300">
-              Resolución TX ({txDim} px) & Aliasing NQS ({nqsFactor}×)
+          <div className="min-w-0 rounded-xl border border-(--hairline) bg-(--surface-elevated) p-3">
+            <label className="mb-1.5 block text-xs font-medium text-(--ink)">
+              Resolución TX ({txDim} px) & NQS ({nqsFactor}×)
             </label>
             <div className="flex gap-2">
               <input
@@ -170,7 +170,7 @@ export function LiveTransmitter() {
                 max={88}
                 value={txDim}
                 onChange={(e) => setTxDim(Number(e.target.value))}
-                className="w-1/2 rounded-lg border border-white/15 bg-zinc-900 px-2.5 py-1 font-mono text-xs text-zinc-100"
+                className="w-1/2 rounded-lg border border-(--hairline) bg-(--surface) px-2.5 py-1 font-mono text-xs text-(--ink)"
               />
               <input
                 type="number"
@@ -178,13 +178,13 @@ export function LiveTransmitter() {
                 max={16}
                 value={nqsFactor}
                 onChange={(e) => setNqsFactor(Number(e.target.value))}
-                className="w-1/2 rounded-lg border border-white/15 bg-zinc-900 px-2.5 py-1 font-mono text-xs text-zinc-100"
+                className="w-1/2 rounded-lg border border-(--hairline) bg-(--surface) px-2.5 py-1 font-mono text-xs text-(--ink)"
               />
             </div>
           </div>
 
-          <div className="rounded-xl border border-white/10 bg-zinc-950/60 p-3">
-            <label className="mb-1.5 block text-xs font-medium text-zinc-300">
+          <div className="min-w-0 rounded-xl border border-(--hairline) bg-(--surface-elevated) p-3">
+            <label className="mb-1.5 block text-xs font-medium text-(--ink)">
               Ruido AWGN SNR (dB, opcional)
             </label>
             <input
@@ -192,18 +192,18 @@ export function LiveTransmitter() {
               placeholder="Ideal (vacío) o ej. 16"
               value={snrDb}
               onChange={(e) => setSnrDb(e.target.value)}
-              className="w-full rounded-lg border border-white/15 bg-zinc-900 px-2.5 py-1 font-mono text-xs text-zinc-100 placeholder:text-zinc-500"
+              className="w-full rounded-lg border border-(--hairline) bg-(--surface) px-2.5 py-1 font-mono text-xs text-(--ink) placeholder:text-(--ink-muted)"
             />
           </div>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-4 border-t border-white/10 pt-4">
-          <label className="flex cursor-pointer items-center gap-2.5 text-xs text-zinc-300">
+        <div className="flex flex-wrap items-center justify-between gap-4 border-t border-(--hairline) pt-4">
+          <label className="flex cursor-pointer items-center gap-2.5 text-xs text-(--ink-muted)">
             <input
               type="checkbox"
               checked={applyRed}
               onChange={(e) => setApplyRed(e.target.checked)}
-              className="h-4 w-4 rounded border-white/20 bg-zinc-950 accent-red-500"
+              className="h-4 w-4 rounded border-(--hairline) accent-red-500"
             />
             Aplicar filtro selectivo de color rojo de mayor área antes de comprimir
           </label>
@@ -211,7 +211,7 @@ export function LiveTransmitter() {
           <button
             type="submit"
             disabled={loading}
-            className="inline-flex items-center gap-2 rounded-xl bg-sky-500 px-5 py-2.5 text-xs font-semibold text-zinc-950 shadow-lg shadow-sky-500/20 transition hover:-translate-y-0.5 hover:bg-sky-400 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
+            className="inline-flex items-center gap-2 rounded-full bg-(--ink) px-5 py-2.5 text-xs font-semibold text-(--canvas) transition hover:opacity-90 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
           >
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : <Play className="h-4 w-4" />}
             {loading ? "Procesando en Python..." : "Ejecutar Pipeline Completo"}
@@ -222,75 +222,72 @@ export function LiveTransmitter() {
       {error && (
         <div
           role="alert"
-          className="rounded-xl border border-red-500/30 bg-red-950/60 p-4 text-xs text-red-200 backdrop-blur"
+          className="rounded-xl border border-red-500/35 bg-red-500/10 p-4 text-xs text-red-700 dark:text-red-200"
         >
           {error}
         </div>
       )}
 
       {!result && !loading && !error && (
-        <div className="rounded-2xl border border-dashed border-white/15 bg-zinc-900/40 p-8 text-center backdrop-blur-sm">
-          <p className="font-display text-sm font-semibold text-zinc-200">
+        <div className="rounded-2xl border border-dashed border-(--hairline) bg-(--surface) p-8 text-center">
+          <p className="font-display text-sm font-semibold text-(--ink)">
             Banco TX listo para transmitir
           </p>
-          <p className="mx-auto mt-1 max-w-xl text-xs leading-relaxed text-zinc-400">
-            Sube tu propia imagen o deja la fotografía por defecto{" "}
-            <span className="font-mono text-zinc-300">Selfie DSP</span>, ajusta la cuantización{" "}
-            <span className="font-mono text-zinc-300">[Byte / Bit]</span> y el esquema pasabanda, y
-            presiona <strong className="text-sky-300">Ejecutar Pipeline Completo</strong> para
-            generar trama, audio modulado y paquete compartible.
+          <p className="mx-auto mt-1 max-w-xl text-xs leading-relaxed text-(--ink-muted)">
+            Sube tu propia imagen o usa <span className="font-mono text-(--ink)">Selfie DSP</span>,
+            ajusta la cuantización y el esquema pasabanda, y ejecuta el motor Python en tiempo real.
           </p>
         </div>
       )}
 
       {result && (
         <div className="animate-reveal space-y-6">
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-            <article className="rounded-2xl border border-white/10 bg-zinc-900/75 p-4 backdrop-blur-md">
-              <p className="font-mono text-[11px] uppercase tracking-wider text-zinc-400">
+          <dl className="grid grid-cols-2 gap-4 border-y border-(--hairline) py-5 sm:grid-cols-4">
+            <div>
+              <dt className="font-mono text-[10px] uppercase tracking-wider text-(--ink-muted)">
                 Rojo Mayor Área
-              </p>
-              <p className="mt-1 font-display text-xl font-bold text-white">
+              </dt>
+              <dd className="mt-1 font-display text-xl font-bold text-(--ink)">
                 {result.fase1.red_filter.largest_area_percent}%
-              </p>
-              <p className="mt-1 text-xs text-zinc-400">
+              </dd>
+              <dd className="text-xs text-(--ink-muted)">
                 {result.fase1.red_filter.num_components} componentes
-              </p>
-            </article>
-            <article className="rounded-2xl border border-white/10 bg-zinc-900/75 p-4 backdrop-blur-md">
-              <p className="font-mono text-[11px] uppercase tracking-wider text-zinc-400">
+              </dd>
+            </div>
+            <div>
+              <dt className="font-mono text-[10px] uppercase tracking-wider text-(--ink-muted)">
                 Compresión {result.fase2.compression.method}
-              </p>
-              <p className="mt-1 font-display text-xl font-bold text-white">
+              </dt>
+              <dd className="mt-1 font-display text-xl font-bold text-(--ink)">
                 {result.fase2.compression.compression_ratio}×
-              </p>
-              <p className="mt-1 text-xs text-sky-400">
+              </dd>
+              <dd className="text-xs text-sky-600 dark:text-sky-400">
                 {result.fase2.compression.compressed_bytes} Bytes
-              </p>
-            </article>
-            <article className="rounded-2xl border border-white/10 bg-zinc-900/75 p-4 backdrop-blur-md">
-              <p className="font-mono text-[11px] uppercase tracking-wider text-zinc-400">
+              </dd>
+            </div>
+            <div>
+              <dt className="font-mono text-[10px] uppercase tracking-wider text-(--ink-muted)">
                 Canal & Demodulación
-              </p>
-              <p className="mt-1 font-display text-xl font-bold text-white">
+              </dt>
+              <dd className="mt-1 font-display text-xl font-bold text-(--ink)">
                 BER = {result.fase3_4.ber !== null ? result.fase3_4.ber.toExponential(1) : "N/A"}
-              </p>
-              <p className="mt-1 text-xs text-emerald-400">
+              </dd>
+              <dd className="text-xs text-emerald-600 dark:text-emerald-400">
                 {result.fase3_4.crc_valid ? "CRC32 OK" : "CRC32 ERROR (Mucho ruido)"}
-              </p>
-            </article>
-            <article className="rounded-2xl border border-white/10 bg-zinc-900/75 p-4 backdrop-blur-md">
-              <p className="font-mono text-[11px] uppercase tracking-wider text-zinc-400">
+              </dd>
+            </div>
+            <div>
+              <dt className="font-mono text-[10px] uppercase tracking-wider text-(--ink-muted)">
                 Calidad Reconstruida
-              </p>
-              <p className="mt-1 font-display text-xl font-bold text-white">
+              </dt>
+              <dd className="mt-1 font-display text-xl font-bold text-(--ink)">
                 {result.fase5.metrics ? `${result.fase5.metrics.psnr_db} dB` : "Fallo CRC"}
-              </p>
-              <p className="mt-1 text-xs text-amber-300">
+              </dd>
+              <dd className="text-xs text-amber-600 dark:text-amber-300">
                 {result.fase5.metrics ? `SSIM ${result.fase5.metrics.ssim}` : "Sin reconstrucción"}
-              </p>
-            </article>
-          </div>
+              </dd>
+            </div>
+          </dl>
 
           <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-5">
             {[
@@ -307,7 +304,7 @@ export function LiveTransmitter() {
                 key={item.label}
                 type="button"
                 onClick={() => setInspectAsset({ src: item.src, title: item.label })}
-                className="group relative overflow-hidden rounded-xl border border-white/10 bg-zinc-950/80 p-2.5 text-center transition hover:-translate-y-0.5 hover:border-sky-400/40 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-400"
+                className="group relative overflow-hidden rounded-xl border border-(--hairline) bg-zinc-950 p-2.5 text-center transition hover:-translate-y-0.5 hover:border-sky-500/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
               >
                 <span className="absolute right-3 top-3 rounded bg-zinc-950/80 p-1 text-zinc-300 opacity-0 transition group-hover:opacity-100">
                   <Maximize2 className="h-3 w-3" />
@@ -343,25 +340,25 @@ export function LiveTransmitter() {
           </div>
 
           <div className="grid min-w-0 gap-4 md:grid-cols-2">
-            <div className="min-w-0 overflow-hidden rounded-xl border border-sky-500/20 bg-zinc-950/85 p-3.5">
-              <p className="mb-2 text-xs font-semibold text-sky-400">
+            <div className="min-w-0 overflow-hidden rounded-xl border border-(--hairline) bg-(--surface) p-3.5">
+              <p className="mb-2 text-xs font-semibold text-sky-600 dark:text-sky-400">
                 Audio Modulado ({result.fase3_4.manifest.audio_duration_s} s)
               </p>
               <audio controls preload="metadata" className="h-9 w-full min-w-0 max-w-full" src={result.fase3_4.modulated_wav_url} />
             </div>
-            <div className="min-w-0 overflow-hidden rounded-xl border border-emerald-500/20 bg-zinc-950/85 p-3.5">
-              <p className="mb-2 text-xs font-semibold text-emerald-400">
+            <div className="min-w-0 overflow-hidden rounded-xl border border-(--hairline) bg-(--surface) p-3.5">
+              <p className="mb-2 text-xs font-semibold text-emerald-600 dark:text-emerald-400">
                 Audio Demodulado (Banda Base)
               </p>
               <audio controls preload="metadata" className="h-9 w-full min-w-0 max-w-full" src={result.fase3_4.demodulated_wav_url} />
             </div>
-            <div className="min-w-0 overflow-hidden rounded-xl border border-white/10 bg-zinc-950/85 p-3.5">
-              <p className="mb-2 text-xs font-semibold text-zinc-200">Audio Original Scanline 1D</p>
+            <div className="min-w-0 overflow-hidden rounded-xl border border-(--hairline) bg-(--surface) p-3.5">
+              <p className="mb-2 text-xs font-semibold text-(--ink)">Audio Original Scanline 1D</p>
               <audio controls preload="metadata" className="h-9 w-full min-w-0 max-w-full" src={result.fase5.orig_audio_wav_url} />
             </div>
             {result.fase5.reconstructed_audio_wav_url && (
-              <div className="min-w-0 overflow-hidden rounded-xl border border-amber-500/20 bg-zinc-950/85 p-3.5">
-                <p className="mb-2 text-xs font-semibold text-amber-400">
+              <div className="min-w-0 overflow-hidden rounded-xl border border-(--hairline) bg-(--surface) p-3.5">
+                <p className="mb-2 text-xs font-semibold text-amber-600 dark:text-amber-400">
                   Audio Reconstruido DAC
                 </p>
                 <audio
@@ -374,7 +371,7 @@ export function LiveTransmitter() {
             )}
           </div>
 
-          <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-white/10 bg-zinc-900/75 p-5 backdrop-blur-md">
+          <div className="flex flex-wrap items-center justify-between gap-4 rounded-2xl border border-(--hairline) bg-(--surface) p-5">
             {result.fase3_4.constellation_iq.length > 0 && (
               <ConstellationPlot
                 title="Constelación I/Q Recibida"
@@ -382,7 +379,7 @@ export function LiveTransmitter() {
               />
             )}
             {result.fase5.reconstructed_svg && (
-              <div className="rounded-xl border border-white/10 bg-zinc-950/85 p-3">
+              <div className="rounded-xl border border-(--hairline) bg-zinc-950 p-3">
                 <p className="mb-2 text-xs font-semibold text-zinc-200">
                   Salida Vectorial SVG en vivo
                 </p>
@@ -402,7 +399,7 @@ export function LiveTransmitter() {
                     "application/zip"
                   )
                 }
-                className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-500 px-4 py-2.5 text-xs font-semibold text-zinc-950 transition hover:-translate-y-0.5 hover:bg-emerald-400 active:scale-[0.98]"
+                className="inline-flex items-center gap-1.5 rounded-full bg-emerald-500 px-4 py-2.5 text-xs font-semibold text-zinc-950 transition hover:bg-emerald-400 active:scale-[0.98]"
               >
                 <Download className="h-3.5 w-3.5" /> Descargar ZIP Compañero
               </button>
@@ -415,9 +412,9 @@ export function LiveTransmitter() {
                     "application/octet-stream"
                   )
                 }
-                className="inline-flex items-center gap-1.5 rounded-xl border border-white/15 bg-zinc-950/80 px-4 py-2.5 text-xs font-semibold text-zinc-100 transition hover:-translate-y-0.5 hover:border-white/30 active:scale-[0.98]"
+                className="inline-flex items-center gap-1.5 rounded-full border border-(--hairline) bg-(--surface-elevated) px-4 py-2.5 text-xs font-semibold text-(--ink) transition hover:border-sky-500/50 active:scale-[0.98]"
               >
-                <Download className="h-3.5 w-3.5 text-sky-400" /> Descargar .dspimg
+                <Download className="h-3.5 w-3.5 text-sky-500" /> Descargar .dspimg
               </button>
             </div>
           </div>
