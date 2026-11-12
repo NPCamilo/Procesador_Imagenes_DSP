@@ -1,13 +1,31 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme inline {
-  --font-display: var(--font-space-grotesk), system-ui, sans-serif;
-  --font-sans: var(--font-inter), system-ui, sans-serif;
-  --font-mono: var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, monospace;
+  --font-display: var(--font-clash-display), system-ui, sans-serif;
+  --font-sans: var(--font-satoshi), system-ui, sans-serif;
+  --font-mono: var(--font-geist-mono), ui-monospace, SFMono-Regular, monospace;
 }
 
 :root {
+  color-scheme: light;
+  --canvas: #f5f4ef;
+  --surface: #eceae2;
+  --surface-elevated: #faf9f5;
+  --ink: #111113;
+  --ink-muted: #52525b;
+  --hairline: rgba(17, 17, 19, 0.12);
+}
+
+.dark {
   color-scheme: dark;
+  --canvas: #09090b;
+  --surface: #121216;
+  --surface-elevated: #17171c;
+  --ink: #f4f4f5;
+  --ink-muted: #a1a1aa;
+  --hairline: rgba(255, 255, 255, 0.1);
 }
 
 html {
@@ -16,52 +34,57 @@ html {
 }
 
 body {
-  background-color: #09090b;
-  color: #f4f4f5;
+  background-color: var(--canvas);
+  color: var(--ink);
   font-family: var(--font-sans);
   overflow-x: clip;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
+/* Pure compositor reveal (transform3d + opacity, zero layout or blur cost) */
 @keyframes fadeInSlideUp {
   0% {
     opacity: 0;
-    transform: translateY(14px);
-    filter: blur(4px);
+    transform: translate3d(0, 12px, 0);
   }
   100% {
     opacity: 1;
-    transform: translateY(0);
-    filter: blur(0);
+    transform: translate3d(0, 0, 0);
   }
 }
 
 .animate-reveal {
-  animation: fadeInSlideUp 0.55s cubic-bezier(0.16, 1, 0.3, 1) both;
+  animation: fadeInSlideUp 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-/* Native HTML5 dialog backdrop and entry transition */
+/* Keep offscreen sections paint-ready for instant jump navigation & reliable media load */
+.station-deferred {
+  contain: layout style;
+}
+
+/* Native HTML5 dialog backdrop and smooth open state */
 dialog::backdrop {
-  background: rgba(9, 9, 11, 0.85);
+  background: rgba(9, 9, 11, 0.78);
   backdrop-filter: blur(8px);
 }
 
-/* Custom sleek dark scrollbar */
+/* Custom sleek scrollbar */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #09090b;
+  background: var(--canvas);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.14);
+  background: rgba(128, 128, 140, 0.28);
   border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.25);
+  background: rgba(128, 128, 140, 0.45);
 }
 
 @media (prefers-reduced-motion: reduce) {

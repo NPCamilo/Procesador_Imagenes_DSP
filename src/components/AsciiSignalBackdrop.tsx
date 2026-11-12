@@ -4,11 +4,24 @@ import { useEffect, useRef } from "react";
 
 interface AsciiSignalBackdropProps {
   active?: boolean;
+  theme?: "dark" | "light";
 }
 
 const ASCII_RAMP = " .:-=+*#%@";
 
-export function AsciiSignalBackdrop({ active = true }: AsciiSignalBackdropProps) {
+const DARK_NEUTRAL = Array.from({ length: ASCII_RAMP.length }, (_, idx) => {
+  const alpha = (0.06 + (idx / ASCII_RAMP.length) * 0.14).toFixed(3);
+  return `rgba(161, 161, 170, ${alpha})`;
+});
+const LIGHT_NEUTRAL = Array.from({ length: ASCII_RAMP.length }, (_, idx) => {
+  const alpha = (0.06 + (idx / ASCII_RAMP.length) * 0.13).toFixed(3);
+  return `rgba(24, 24, 27, ${alpha})`;
+});
+
+export function AsciiSignalBackdrop({
+  active = true,
+  theme = "dark",
+}: AsciiSignalBackdropProps) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
 
   useEffect(() => {
@@ -17,13 +30,19 @@ export function AsciiSignalBackdrop({ active = true }: AsciiSignalBackdropProps)
     const ctx = canvas.getContext("2d", { alpha: true });
     if (!ctx) return;
 
+    const palette = theme === "dark" ? DARK_NEUTRAL : LIGHT_NEUTRAL;
+    const boostedColor =
+      theme === "dark" ? "rgba(56, 189, 248, 0.34)" : "rgba(2, 132, 199, 0.34)";
+    const peakColor =
+      theme === "dark" ? "rgba(244, 63, 94, 0.22)" : "rgba(225, 29, 72, 0.22)";
+
     const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     let animId = 0;
     let width = 0;
     let height = 0;
     let cols = 0;
     let rows = 0;
-    const cell = 22;
+    let cell = 22;
 
     const pointer = {
       x: 0.5,
@@ -37,12 +56,13 @@ export function AsciiSignalBackdrop({ active = true }: AsciiSignalBackdropProps)
       const dpr = Math.min(window.devicePixelRatio || 1, 1.5);
       width = window.innerWidth;
       height = window.innerHeight;
+      cell = width < 768 ? 28 : 22;
       canvas.width = Math.floor(width * dpr);
       canvas.height = Math.floor(height * dpr);
       canvas.style.width = `${width}px`;
       canvas.style.height = `${height}px`;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ctx.font = '600 12px "JetBrains Mono", ui-monospace, monospace';
+      ctx.font = '600 12px "Geist Mono", ui-monospace, monospace';
       ctx.textAlign = "center";
       ctx.textBaseline = "middle";
       cols = Math.ceil(width / cell) + 1;
@@ -61,38 +81,41 @@ export function AsciiSignalBackdrop({ active = true }: AsciiSignalBackdropProps)
 
       for (let r = 0; r < rows; r++) {
         const y = r * cell + cell * 0.5;
+        const dy = y - py;
+        const dySq = dy * dy;
+        const cosR = Math.cos(r * 0.19 - timeSec * 0.85);
+
         for (let c = 0; c < cols; c++) {
           const x = c * cell + cell * 0.5;
-
           const dx = x - px;
-          const dy = y - py;
-          const dist = Math.sqrt(dx * dx + dy * dy);
+          const distSq = dx * dx + dySq;
 
-          // Superposition of a drifting carrier + radial pointer interference ripple
-          const carrier =
-            Math.sin(c * 0.22 + timeSec * 1.15) *
-            Math.cos(r * 0.19 - timeSec * 0.85);
+          const carrier = Math.sin(c * 0.22 + timeSec * 1.15) * cosR;
           const harmonic = Math.sin((c + r) * 0.12 - timeSec * 0.7) * 0.45;
-          const ripple =
-            dist < 320
-              ? Math.sin(dist * 0.045 - timeSec * 4.5) *
-                (1 - dist / 320) *
-                (0.75 + pointer.energy * 0.65)
-              : 0;
+
+          let ripple = 0;
+          let dist = 999;
+          if (distSq < 102400) {
+            dist = Math.sqrt(distSq);
+            ripple =
+              Math.sin(dist * 0.045 - timeSec * 4.5) *
+              (1 - dist / 320) *
+              (0.75 + pointer.energy * 0.65);
+          }
 
           const amplitude = (carrier + harmonic + ripple + 1.45) / 2.9;
-          const clamped = Math.max(0, Math.min(0.999, amplitude));
-          const charIdx = Math.floor(clamped * ASCII_RAMP.length);
+          const clamped = amplitude < 0 ? 0 : amplitude > 0.999 ? 0.999 : amplitude;
+          const charIdx = (clamped * ASCII_RAMP.length) | 0;
 
           if (charIdx <= 1) continue;
 
           const ch = ASCII_RAMP[charIdx];
-          const isBoosted = dist < 240 && charIdx >= 6;
-          ctx.fillStyle = isBoosted
-            ? "rgba(56, 189, 248, 0.34)"
-            : charIdx >= 7
-              ? "rgba(244, 63, 94, 0.22)"
-              : `rgba(161, 161, 170, ${(0.06 + clamped * 0.14).toFixed(3)})`;
+          ctx.fillStyle =
+            dist < 240 && charIdx >= 6
+              ? boostedColor
+              : charIdx >= 7
+                ? peakColor
+                : palette[charIdx];
           ctx.fillText(ch, x, y);
         }
       }
@@ -119,46 +142,73 @@ export function AsciiSignalBackdrop({ active = true }: AsciiSignalBackdropProps)
 
     let lastRender = 0;
     const loop = (now: number) => {
-      // Cap around ~30fps for ultra-low CPU overhead while scrolling/computing
-      if (now - lastRender >= 33) {
+      if (!document.hidden && now - lastRender >= 33) {
         drawFrame(now * 0.001);
         lastRender = now;
       }
       animId = window.requestAnimationFrame(loop);
     };
 
+    const onVisibilityChange = () => {
+      if (!document.hidden) lastRender = 0;
+    };
+    document.addEventListener("visibilitychange", onVisibilityChange);
+
     animId = window.requestAnimationFrame(loop);
 
     return () => {
       window.cancelAnimationFrame(animId);
+      document.removeEventListener("visibilitychange", onVisibilityChange);
       window.removeEventListener("resize", resize);
       window.removeEventListener("pointermove", onPointerMove);
     };
-  }, [active]);
+  }, [active, theme]);
 
   return (
     <div
       aria-hidden="true"
-      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-zinc-950 [contain:strict]"
+      className="pointer-events-none fixed inset-0 -z-10 overflow-hidden bg-(--canvas) transition-colors duration-300 [contain:strict]"
     >
-      {/* Tier 1: Subtle technical grid masked toward viewport center */}
-      <div className="absolute inset-0 bg-[radial-gradient(#ffffff12_1px,transparent_1px)] [background-size:24px_24px] [mask-image:radial-gradient(ellipse_75%_65%_at_50%_20%,#000_55%,transparent_100%)]" />
-
-      {/* Tier 2: Interactive ASCII RF Interference Matrix */}
-      <canvas
-        ref={canvasRef}
-        className={`absolute inset-0 transition-opacity duration-500 [mask-image:radial-gradient(ellipse_85%_80%_at_50%_35%,#000_50%,transparent_100%)] ${
-          active ? "opacity-100" : "opacity-35"
+      {/* Technical Dot Matrix */}
+      <div
+        className={`absolute inset-0 [background-size:24px_24px] [mask-image:radial-gradient(ellipse_75%_65%_at_50%_20%,#000_55%,transparent_100%)] ${
+          theme === "dark"
+            ? "bg-[radial-gradient(#ffffff12_1px,transparent_1px)]"
+            : "bg-[radial-gradient(#11111314_1px,transparent_1px)]"
         }`}
       />
 
-      {/* Tier 3: Atmospheric radial glow orbs (Backgrounds Supply) */}
-      <div className="absolute -left-32 -top-40 h-[520px] w-[520px] rounded-full bg-sky-500/12 blur-[130px]" />
-      <div className="absolute -right-24 top-16 h-[460px] w-[460px] rounded-full bg-red-600/10 blur-[140px]" />
-      <div className="absolute bottom-0 left-1/3 h-[380px] w-[560px] rounded-full bg-emerald-500/8 blur-[140px]" />
+      {/* Interactive ASCII Carrier Matrix */}
+      <canvas
+        ref={canvasRef}
+        className={`absolute inset-0 transition-opacity duration-500 [mask-image:radial-gradient(ellipse_85%_80%_at_50%_35%,#000_50%,transparent_100%)] ${
+          active ? "opacity-100" : "opacity-25"
+        }`}
+      />
 
-      {/* Tier 4: Monochromatic SVG Fractal Noise Texture (prevents gradient banding) */}
-      <svg className="absolute inset-0 h-full w-full opacity-[0.03] mix-blend-overlay">
+      {/* Atmospheric Radial Glows adapted cleanly to Dark/Light canvas */}
+      <div
+        className={`absolute -left-32 -top-40 h-[520px] w-[520px] rounded-full blur-[130px] ${
+          theme === "dark" ? "bg-sky-500/12" : "bg-sky-500/10"
+        }`}
+      />
+      <div
+        className={`absolute -right-24 top-16 h-[460px] w-[460px] rounded-full blur-[140px] ${
+          theme === "dark" ? "bg-red-600/10" : "bg-rose-500/8"
+        }`}
+      />
+      <div
+        className={`absolute bottom-0 left-1/3 h-[380px] w-[560px] rounded-full blur-[140px] ${
+          theme === "dark" ? "bg-emerald-500/8" : "bg-emerald-500/8"
+        }`}
+      />
+
+      {/* Monochromatic SVG Fractal Grain */}
+      <svg
+        className={`absolute inset-0 h-full w-full mix-blend-overlay ${
+          theme === "dark" ? "opacity-[0.03]" : "opacity-[0.025]"
+        }`}
+      >
         <filter id="dsp-noise-grain">
           <feTurbulence
             type="fractalNoise"
