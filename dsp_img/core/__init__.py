@@ -1,5 +1,11 @@
-"""Contratos tipados y primitivas matemáticas del núcleo DSP."""
+"""Contratos tipados, primitivas DSP e ingesta/análisis de imagen del núcleo."""
 
+from .analyzer import (
+    analyze_sampling_frequency,
+    compute_2d_radial_spectrum,
+    plot_sampling_frequency_analysis,
+    summarize_sampling_metrics,
+)
 from .contracts import (
     BaseCompressor,
     BaseDemodulator,
@@ -13,6 +19,12 @@ from .contracts import (
     ReconstructionMetrics,
     RedSplashResult,
     SamplingReport,
+)
+from .image_io import (
+    image_to_png_bytes,
+    load_image,
+    plot_original_reproduction,
+    save_image_png,
 )
 from .primitives import (
     DB_PER_BIT,
@@ -34,6 +46,11 @@ from .primitives import (
     sqnr_theoretical_db,
     unpack_bits,
 )
+from .red_filter import (
+    detect_red_mask,
+    isolate_largest_red_region,
+    plot_red_splash_comparison,
+)
 
 __all__ = [
     "DB_PER_BIT",
@@ -50,20 +67,31 @@ __all__ = [
     "ReconstructionMetrics",
     "RedSplashResult",
     "SamplingReport",
+    "analyze_sampling_frequency",
+    "compute_2d_radial_spectrum",
     "compute_spectrum",
+    "detect_red_mask",
     "diagnostico_nyquist",
     "dither_signal",
     "estimate_max_frequency",
+    "image_to_png_bytes",
+    "isolate_largest_red_region",
+    "load_image",
     "nrmse_by_range",
     "pack_bits",
     "pearson_correlation",
+    "plot_original_reproduction",
+    "plot_red_splash_comparison",
+    "plot_sampling_frequency_analysis",
     "psnr_db",
     "quantize_uniform",
     "quantizer_params",
     "reconstruct_sinc",
     "reconstruct_zoh",
     "rmse",
+    "save_image_png",
     "snr_db",
     "sqnr_theoretical_db",
+    "summarize_sampling_metrics",
     "unpack_bits",
 ]

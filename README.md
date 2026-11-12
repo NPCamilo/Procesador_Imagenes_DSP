@@ -11,7 +11,7 @@ Sistema modular en Python diseñado para validar paso a paso la cadena completa 
 | Fase | Módulo | Requisito del Proyecto | Estado |
 | :--- | :--- | :--- | :---: |
 | **Fase 0** | `dsp_img/core/` + CI | Contratos, primitivas DSP, tema Okabe-Ito, WAV I/O, GitHub Actions | **Completada** |
-| **Fase 1** | `image_io`, `red_filter`, `analyzer` | Carga JPG/JPEG, reproducción, filtro de color rojo de mayor área, $f_s$ | *Siguiente* |
+| **Fase 1** | `image_io`, `red_filter`, `analyzer` | Carga JPG/JPEG, reproducción, filtro de color rojo de mayor área, $f_s$ | **Completada** |
 | **Fase 2** | `sampling_nqs`, `quantization`, `codec` | Muestreo NQS, resolución `[Byte / Bit]`, compresión/descompresión `.dspimg` | *Pendiente* |
 | **Fase 3** | `dsp_img/modulation/` | Modulación (`AM, FM, ASK, FSK, PSK, QAM, MFSK`) y audio audible de bits | *Pendiente* |
 | **Fase 4** | `dsp_img/demodulation/` | Sincronización, demodulación, cálculo de BER y reproducción demodulada | *Pendiente* |
