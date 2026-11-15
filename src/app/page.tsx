@@ -10,12 +10,34 @@ import {
   Sparkles,
   Sun,
 } from "lucide-react";
+import dynamic from "next/dynamic";
 import type { DemoData } from "@/types/dsp";
 import { AsciiSignalBackdrop } from "@/components/AsciiSignalBackdrop";
 import { EditorialShowcase } from "@/components/EditorialShowcase";
-import { LiveTransmitter } from "@/components/LiveTransmitter";
-import { PeerReceiver } from "@/components/PeerReceiver";
-import { TelemetryDrawer, type TelemetryFocus } from "@/components/TelemetryDrawer";
+import type { TelemetryFocus } from "@/components/TelemetryDrawer";
+
+const LiveTransmitter = dynamic(
+  () => import("@/components/LiveTransmitter").then((mod) => mod.LiveTransmitter),
+  {
+    loading: () => (
+      <div className="h-96 animate-pulse rounded-2xl border border-(--hairline) bg-(--surface)" />
+    ),
+  }
+);
+
+const PeerReceiver = dynamic(
+  () => import("@/components/PeerReceiver").then((mod) => mod.PeerReceiver),
+  {
+    loading: () => (
+      <div className="h-96 animate-pulse rounded-2xl border border-(--hairline) bg-(--surface)" />
+    ),
+  }
+);
+
+const TelemetryDrawer = dynamic(
+  () => import("@/components/TelemetryDrawer").then((mod) => mod.TelemetryDrawer),
+  { ssr: false }
+);
 
 const SECTION_LINKS = [
   { id: "captura", code: "00", label: "Captura & Comparador" },
