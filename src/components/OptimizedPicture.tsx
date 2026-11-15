@@ -32,9 +32,9 @@ export function OptimizedPicture({
       <img
         src={src}
         alt={alt}
-        loading={priority ? "eager" : "eager"}
+        loading={priority ? "eager" : "lazy"}
         decoding="async"
-        fetchPriority={priority ? "high" : "auto"}
+        fetchPriority={priority ? "high" : "low"}
         draggable={draggable}
         className={className}
       />

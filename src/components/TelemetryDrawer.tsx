@@ -36,7 +36,7 @@ export function TelemetryDrawer({
       onClick={(e) => {
         if (e.target === dialogRef.current) onClose();
       }}
-      className="fixed inset-y-0 right-0 m-0 ml-auto h-full max-h-none w-[min(100vw,540px)] rounded-l-2xl border-l border-(--hairline) bg-(--surface-elevated) p-0 text-(--ink) shadow-2xl"
+      className="fixed inset-y-0 right-0 m-0 ml-auto h-full max-h-none w-full sm:w-[min(100vw,540px)] rounded-none sm:rounded-l-2xl border-t sm:border-t-0 sm:border-l border-(--hairline) bg-(--surface-elevated) p-0 text-(--ink) shadow-2xl"
     >
       <div className="flex h-full flex-col">
         <header className="flex items-center justify-between border-b border-(--hairline) px-6 py-4">

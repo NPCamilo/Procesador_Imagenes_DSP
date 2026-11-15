@@ -105,6 +105,13 @@ export function AudibleSignalConsole({ tracks }: AudibleSignalConsoleProps) {
     setCurrentTime(next);
   };
 
+  const scrubFromPointer = (e: React.PointerEvent<HTMLDivElement>) => {
+    const rect = e.currentTarget.getBoundingClientRect();
+    if (rect.width > 0) {
+      handleScrub((e.clientX - rect.left) / rect.width);
+    }
+  };
+
   if (!activeTrack) return null;
 
   const progress = duration > 0 ? Math.min(1, currentTime / duration) : 0;
@@ -182,7 +189,7 @@ export function AudibleSignalConsole({ tracks }: AudibleSignalConsoleProps) {
           </div>
         </div>
 
-        {/* Click-to-seek Minimalist Waveform Bar */}
+        {/* Click-or-drag Minimalist Waveform Bar */}
         <div
           role="slider"
           tabIndex={0}
@@ -190,15 +197,19 @@ export function AudibleSignalConsole({ tracks }: AudibleSignalConsoleProps) {
           aria-valuemin={0}
           aria-valuemax={Math.round(duration || 100)}
           aria-valuenow={Math.round(currentTime)}
-          onClick={(e) => {
-            const rect = e.currentTarget.getBoundingClientRect();
-            handleScrub((e.clientX - rect.left) / rect.width);
+          onPointerDown={(e) => {
+            e.currentTarget.setPointerCapture(e.pointerId);
+            scrubFromPointer(e);
+          }}
+          onPointerMove={(e) => {
+            if (e.buttons > 0) scrubFromPointer(e);
           }}
           onKeyDown={(e) => {
             if (e.key === "ArrowRight") handleScrub(Math.min(1, progress + 0.05));
             if (e.key === "ArrowLeft") handleScrub(Math.max(0, progress - 0.05));
           }}
-          className="flex h-12 cursor-pointer items-center gap-[3px] rounded-xl border border-(--hairline) bg-(--surface-elevated) px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
+          style={{ touchAction: "none" }}
+          className="flex h-12 cursor-pointer select-none items-center gap-[3px] rounded-xl border border-(--hairline) bg-(--surface-elevated) px-3 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-sky-500"
         >
           {bars.map((h, idx) => {
             const played = idx / bars.length <= progress;
